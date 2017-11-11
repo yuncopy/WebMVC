@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BluePay</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" type="text/css" href="/css/bank/doku.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bank/in/main.css"/>
+    <script src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src='/js/bank/in/doku.js'></script>
+    <script type="text/javascript" src='/js/bank/in/main.js'></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div id="modal-alert-loading" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index:99999">
+    <div class="modal-dialog" style="margin:20% auto; " align="center">
+        <img src="/img/loading-2.gif">
+    </div>
+</div>
+<section class="default-width"><!-- start content -->
+    <div class="head padd-default"><!-- start head -->
+        <div class="left-head fleft">
+            <img src="/img/bank/in/logo.png" alt="" />
+        </div>
+        <div class="right-head fright">
+            <div class="text-totalpay color-two">Total Payment ( IDR )</div>
+            <div class="amount color-one" style="color:#3596D3"><?php echo $price;?></div>
+        </div>
+        <div class="clear"></div>
+    </div><!-- end head -->
+
+    <div class=" " style="text-align:right;padding-right:10px;" ><!-- start select payment channel -->
+        <span style="letter-spacing: -1px;font:normal normal 14px/20px 'Microsoft YaHei';display: <?php if($taxFee>0){echo '';}else{echo 'none';}?>" id="content-fee">Kamu akan dikenakan biaya transfer sebesar Rp 6.500</span>
+        <br /><img src="/img/bank/in/logo-payment1.png" >
+    </div><!-- end select payment channel -->
+
+    <div class="content-payment-channel padd-default"><!-- start content payment channel -->
+        <form id="dataForm">
+            <div id="mandiriclickpay" class="channel" style="padding-top:-10px;"> <!-- mandiri clickpay -->
+                <!--用户名-->
+                <div class="styled-input">
+                    <input type="text" id="reqName" name="reqName" value="" class="" required />
+                    <label>Customer Name</label>
+                </div>
+                <!--邮箱-->
+                <div class="styled-input">
+                    <input type="email" id="reqEmail" name="reqEmail" value="" class="" required />
+                    <label>Customer Email</label>
+                </div>
+                <!--ccnumber-->
+                <div class="styled-input">
+                    <input type="text" id="cc_number" name="cc_number" value="" class="cc-number" required />
+                    <label>mandiri debit card number</label>
+                </div>
+                <div class="desc">
+                    Pastikan bahwa kartu Anda telah diaktivasi melalui layanan mandiri Internet Banking Bank Mandiri pada menu Authorized Payment agar dapat melakukan transaksi Internet Payment.<br /><br />
+                    Kamu harus menyelesaikan transaksi ini paling lama dalam 20 menit. Lebih dari 20 menit kamu harus membuat transaksi baru
+                </div>
+                <div class="line"></div>
+                <div class="token">
+                    <div class="text-token desc fright">
+                        Gunakan token pin mandiri untuk bertransaksi. Nilai yang dimasukkan pada token Anda (Metode APPLI 3)<br />
+								<span style="letter-spacing: -0.9px;">
+								1.Masukkan challenge code 1 lalu tahan tombol merah hingga muncul "2"<br />
+								2.Masukkan challenge code 2 lalu tahan tombol merah hingga muncul "3"<br />
+								3.Masukkan challenge code 3 lalu tahan tombol merah hingga muncul angka token<br />
+								4.Masukkan angka token di "Token Response" dan lanjutkan pembayaran<br />
+								</span>
+                        <!---->
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="list-chacode">
+                    <ul>
+                        <li>
+                            <div class="text-chacode">Challenge Code 1</div>
+                            <input type="text" id="CHALLENGE_CODE_1" class="num-chacode" name="CHALLENGE_CODE_1" value="" style="text-align: center" readonly="true" required/>
+                            <div class="clear"></div>
+                        </li>
+                        <li>
+                            <div class="text-chacode">Challenge Code 2</div>
+                            <div class="num-chacode"><?php echo $price+$taxFee;?></div>
+                            <div class="clear"></div>
+                        </li>
+                        <li>
+                            <div class="text-chacode">Challenge Code 3</div>
+                            <div class="num-chacode" id="challenge_div_3"></div>
+                            <input type="hidden" name="CHALLENGE_CODE_3" id="CHALLENGE_CODE_3" value=""/>
+                            <div class="clear"></div>
+                        </li>
+                        <div class="clear"></div>
+                    </ul>
+                </div>
+                <div class="validasi">
+                    <div class="styled-input fleft width50">
+                        <input type="text" required="" name="responseToken" maxlength="6">
+                        <input type="hidden" name="productId" value="<?php echo $productId;?>">
+                        <input type="hidden" name="promotionId" value="<?php echo $promotionId;?>">
+                        <input type="hidden" name="price" value="<?php echo $price;?>">
+                        <input type="hidden" name="transactionId" value="<?php echo $transactionid;?>">
+                        <input type="hidden" name="propsName" value="<?php echo $propsName;?>">
+                        <input type="hidden" name="customerId" value="<?php echo $customerId;?>">
+                        <label>Token Response</label>
+                    </div>
+                    <div class="clear"></div>
+								<span title="Explenation Text" class="tooltip tolltips-wallet">
+									   <span title="More"></span>
+								</span>
+                </div>
+                <input type="submit" value="Process Payment" class="default-btn">
+            </div><!-- mandiri clickpay -->
+        </form>
+    </div><!-- end content payment channel -->
+
+</section><!-- end content -->
+<div class="footer">
+    <img src="/img/bank/in/secure.png" alt="" />
+    <br />
+    <div class="">Copyright BluePay <?php echo date('Y')?></div>
+</div>
+</body>
+<script>
+    var challenge3 = '<?php echo str_shuffle("1234567").date('s');?>';
+    $('#dataForm').bind('submit', function (event) {
+        event.preventDefault();
+        showLoading();
+        var data = $("#dataForm").serialize();
+        $.ajax({
+            type: "GET",
+            async:true,
+            url: "/c=bank&a=submit?"+data,
+            dataType: "json",
+            success: function(data){
+                hideLoading();
+                if(data.url){
+                    window.location.href = data.url;
+                }
+            },
+            error:function(error,error2,error3){
+                hideLoading();
+                console.log(error);
+                console.log(error2);
+                console.log(error3);
+                alert('Request timeout, Please check your network.');
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>BluePay</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cashcard/style.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bluepay.js"></script>
+    <script src="/js/cashcard/main.js"></script>
+</head>
+<body sroll="no">
+<div id="modal-alert" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index:99999">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:12pt;">
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div id="_edit-CP">
+                        <div class="col-md-12" id="alert_cont">
+                            <img src="/img/success.png" alt="">
+                        </div>
+                        <div id="infoID" class="col-md-12"
+                             style="padding:10% 0PX;font-family: HelveticaNeue;font-size: 14px;color: #309CFF;letter-spacing: -0.01px;">
+                            Untuk mengakhiri transaksi ini silahkan balas kode verifikasi yang tertera melalui sms
+                            <p style="font-family: HelveticaNeue-Medium;font-size: 18px;color: #309CFF;letter-spacing: -0.01px;">
+                                BUY xxx</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"
+                 style="text-align:center; background: #309CFF; border-radius:0pt 0pt 11pt 11pt;font-family: HelveticaNeue;font-size: 18px;color: #FFFFFF;letter-spacing: -0.01px;">
+                OK
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-alert-loading" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index:99999">
+    <div class="modal-dialog">
+        <div class="modal-dialog" style="margin:20% auto; " align="center">
+            <img src="/img/loading-2.gif">
+        </div>
+    </div>
+</div>
+
+<div id="wrap">
+    <div id="main-content">
+        <div id="_logo">
+            <div class="container">
+                <div class="col-md-12">
+                    <img src="/img/bluePay_logo.png" class="center-block img-responsive">
+                </div>
+            </div>
+        </div>
+        <div id="_sub-content">
+            <div class="container">
+                <div class="contentTopthb">
+                    <span class="topclass">
+                        <ul>
+                            <span id="topSpanID">
+                                <?php foreach($op as $v):?>
+                                    <li style="width: <?=1/count($op)*100?>%"><a href="javascript:void(0);" id="<?=$v?>" onclick="selectTelco('<?=$v?>')"><?=$v?></a></li>
+                                <?php endforeach;?>
+                            </span>
+                        </ul>
+                    </span>
+                </div>
+                <div class="contentpicthb">
+                    <img id="ic_telco" width="70%">
+                </div>
+                <div class="col-md-12 contentbottomthb">
+                        <span id="inptTextId">
+                            <?=$input?>
+                        </span>
+                    <?=$thGuideBlueCoins?>
+                    <button type="button" id="buttonTestID" class="btn btn-block btn-lg btn-info" onclick="submit()"><?=$lang['confirm']; ?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    <div class="sub-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-center">&copy; <a href="#" title="BlueMobile">Blue Mobile Tech</a> Co.,Ltd. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    init({
+        op:"<?=$op?>",
+        ct:"<?=$ct?>",
+        lang:'<?=json_encode($lang);?>',
+        redirectUrl:"<?=$redirectUrl?>",
+        cardNo:"<?=$cardNo?>",
+        serialNo:"<?=$serialNo?>",
+        productId:"<?=$productId?>",
+        promotionId:"<?=$promotionId?>",
+        provider:"<?=$provider?>",
+        propsName:"<?=$propsName?>",
+        customerId:"<?=$customerId?>",
+        transactionId:"<?=$transactionId?>",
+        status:"<?=$status?>",
+        description:"<?=$description?>",
+        isShowLogo:"<?=$isShowLogo?>"
+    });
+</script>
+</body>
+</html>

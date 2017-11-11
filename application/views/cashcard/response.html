@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="/css/cashcard/response.css" />
+
+    <script type="text/javascript" src = "/js/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="top">
+        <img src="img/bluepay_480x270.png" class="titleImg" />
+
+    </div>
+
+    <div class="main">
+
+        <div class="box-shadow">
+            <img src="/img/loading-2.gif" class="close"   id="p_info_img"/>
+
+				<span class="d-span" id="p_info_message">
+
+				</span>
+            <img src="img/dot.png" class="dot"  />
+            <div class="content">
+                <div class="item">
+						<span class="left" >
+							transactionId
+						</span>
+						<span class="right" id="p_info_tid">
+
+						</span>
+                </div>
+
+                <div class="item" >
+					 	<span class="left">
+					 		Card NO.
+					 	</span>
+					 	<span class="right" id="p_info_card_no">
+					 	</span>
+                </div>
+
+                <div class="item" >
+						<span class="left">
+							Time
+						</span>
+						<span class="right" id="p_info_time">
+
+						</span>
+                </div>
+
+                <div class="item" id="p_info_price_div" >
+						<span class="left">
+							Price
+						</span>
+						<span class="right" id="p_info_price" >
+
+						</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script >
+    function modifyResult(status,price,tid,tipStr,cardNo,time){
+        $("#p_info_img").prop('src','img/'+status+".png");
+        $("#p_info_img").css('display','block');
+        $("#loading_page").hide();
+        $("#p_info_price").html(price);
+        $("#p_info_message").html(tipStr);
+        $("#p_info_tid").html(tid);
+        $("#p_info_time").html(time);
+        if (cardNo.length == 0){
+            $("#p_info_card_no").hide();
+        }else{
+            $("#p_info_card_no").html(cardNo);
+        }
+        if (price.length == 0) {
+            $("#p_info_price_div").hide();
+        }else{
+            $("#p_info_price").html(price);
+        }
+    }
+</script>
+</body>
+</html>

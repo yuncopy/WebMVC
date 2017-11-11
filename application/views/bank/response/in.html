@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="urt-8" />
+    <title>BluePay</title>
+    <meta name="Keywords" content="" />
+    <meta name="Description" content="" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+
+    <!-- Mobile Devices Support @begin -->
+    <meta content="application/xhtml+xml;charset=UTF-8" http-equiv="Content-Type">
+    <meta content="no-cache,must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="pragma">
+    <meta content="0" http-equiv="expires">
+    <meta content="telephone=no, address=no" name="format-detection">
+    <meta name="apple-mobile-web-app-capable" content="yes" /> <!-- apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Mobile Devices Support @end -->
+    <style>
+        * {padding:0; margin:0;}
+        html, body{ height:100%;}
+        img {vertical-align: middle;}
+        li{list-style:none;}
+        .body{max-width:640px;margin:auto;min-height:100%;position:relative;}
+        .body .top{width:100%;height:50%;}
+        .body .top div{width:260px;height:100%;margin:auto;padding-top:30px;text-align:center;}
+        .body .top p{font:italic bold 16px/30px 'Microsoft YaHei',sans-serif;color:#05B71E;}
+        .body .list_ul{width:100%;min-height:100px;text-align:center;}
+        .body .content{padding-top:1px;font:normal bold 26px/30px 'Microsoft YaHei',sans-serif;color:gray;}
+        .item{
+            text-align: left;
+            padding: 5px;
+            font-size: 16px;
+            margin-left: 50px;
+        }
+    </style>
+    <!--link rel="stylesheet" type="text/css" href="css/font-awesome.css" media="all" /-->
+</head>
+<body>
+<section class="body">
+    <!-- 头部LOGO图片-->
+    <header class="top">
+        <div>
+            <img src="/img/bank/in/<?php echo $imgValue;?>.png" alt="logo pic" style="width:50%;" />
+        </div>
+    </header>
+    <!--内容部分-->
+    <section class="content list_ul">
+        <p style="text-align:left;padding:10px;font-size:20px;margin-left: 45px"><?php echo $myValue;?></p>
+        <?php
+        if(isset($transaction_id) && !empty($transaction_id)){
+            echo "<p class='item'>tid:{$transaction_id}</p>";
+        }
+        if(isset($time) && !empty($time)){
+        echo "<p class='item'>time:{$time}</p>";
+        }
+        if(isset($bt_id) && !empty($bt_id)){
+        echo "<p class='item'>bt_id:{$bt_id}</p>";
+        }
+        if(isset($price) && !empty($price)){
+        echo "<p class='item'>price:".number_format($price)."</p>";
+        }
+        ?>
+    </section>
+</section>
+</body>
+</html>

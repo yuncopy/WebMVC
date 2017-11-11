@@ -1,0 +1,28 @@
+{
+    "require": {
+        "illuminate/database": "5.0.*",
+        "illuminate/events": "5.0.*",
+        "monolog/monolog": "^1.23",
+        "predis/predis": "*",
+        "guzzlehttp/guzzle": "^6.3",
+        "respect/validation": "^1.1",
+        "lancerhe/php-crypt": "^1.1",
+        "twig/twig": "^2.4"
+    },
+    "autoload" : {
+        "files":[
+            "application/functions/functions.php"
+        ],
+        "psr-4":{
+            "service\\":"application/service/",
+            "crontab\\library\\":"application/modules/Crontab/library",
+            "crontab\\models\\":"application/modules/Crontab/models",
+            "crontab\\service\\":"application/modules/Crontab/service",
+            "crontab\\task\\":"application/modules/Crontab/task"
+        }
+    },
+    "require-dev": {
+        "filp/whoops": "^2.1",
+        "symfony/var-dumper": "^3.3"
+    }
+}

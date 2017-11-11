@@ -1,0 +1,413 @@
+﻿html, body {
+    width:100%;
+    height: 100%;
+    background-color:#EEF6FC;
+    /* The html and body elements cannot have any padding or margin. */
+}
+
+
+#modal-alert{width:80%;height:60%;margin:auto;text-align: center;}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: 80%;
+    /* Negative indent footer by its height */
+    margin: 0 auto -50px;
+    /* Pad bottom by footer height */
+    padding: 0 0 60px;
+}
+/* Set the fixed height of the footer here */
+/* Footer */
+#footer {
+    width: 90%;
+    height: 15%;
+    margin-top: 115%;
+} 
+#footer .sub-footer {
+    
+    font:normal bold 12px/12px 'Microsoft YaHei';
+}
+#footer .sub-footer p, #footer .sub-footer p a {
+    padding-top: 15px;
+    font-weight: 300;
+    margin-top: 100%;
+}
+
+.head-footer {
+    background: #343837 no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.head-footer {
+    padding: 50px 0
+}
+.head-footer .footer-left, .head-footer .footer-right, .head-footer .footer-below {
+    text-align: left
+}
+@media (min-width: 992px) {
+    .head-footer .footer-left {
+        text-align: left
+    }
+    .head-footer .footer-right {
+        text-align: right
+    }
+    .head-footer .footer-below {
+        text-align: center
+    }
+}
+
+
+.head-footer ul li a {
+    padding: 0 5px 0 5px;
+}
+.head-footer ul li a, .head-footer p, .head-footer a, #footer p, #footer a {
+    color: rgb(153, 153, 153);
+    font-weight: 200;
+}
+.head-footer ul li a:hover, .head-footer a:hover, #footer a:hover {
+    color: #EEEEEE;
+    text-decoration: none;
+}
+.head-footer p a .fa-weixin, .head-footer p a .fa-facebook {
+    font-size: 20px;
+    color: rgb(153, 153, 153);
+    padding-right: 5px;
+}
+.head-footer p a .fa-weixin:hover, .head-footer p a .fa-facebook:hover {
+    color: #EEEEEE;
+}
+
+#main-content{
+    height: 70%;
+}
+/* content */
+#_logo img {
+    padding: 25px 20px;
+    width: 120px;
+}
+
+#_logo{
+    height:60px;
+}
+#_sub-content{
+    width:90%;
+    margin:auto;
+    margin-top: 20px;
+    border-radius: 9pt;
+    background-color:#FFFFFF;
+    padding-bottom:40px;
+    box-shadow: 0px 2px 2px #309CFF ;
+
+}
+
+/**内容顶部的栏目**/
+#_sub-content .contentTop {height:40px;  ;background-size: 100% 110%;}
+#_sub-content .contentTop ul{width:100%; padding:0px;height:100%;}
+#_sub-content .contentTop ul li{font:normal bold 12px/40px 'Microsoft YaHei'; width:25%; height:40px;text-align: center;float:left; list-style-type:none;}
+#_sub-content .contentTop ul li a{width:100%;height:100%;display: block; text-decoration:none;color:darkgray;}
+#_sub-content .contentTop ul li:nth-child(1) a{color:black;}
+
+
+#_sub-content .contentTopweb {height:40px;   ;background-size: 100% 110%;}
+#_sub-content .contentTopweb ul{width:100%; padding:0px;height:100%;}
+#_sub-content .contentTopweb ul li{font:normal bold 12px/40px 'Microsoft YaHei'; width:33%; height:40px;text-align: center;float:left; list-style-type:none;}
+#_sub-content .contentTopweb ul li a{width:100%;height:100%;display: block; text-decoration:none;color:darkgray;}
+#_sub-content .contentTopweb ul li:nth-child(1) a{color:black;}
+
+#_sub-content #selectId{display: none;}
+
+#_sub-content .contentpic {
+    width:100%;
+    min-height:100px;
+    text-align:center;
+    padding-top:10px;
+    margin:auto;
+    
+}
+
+
+
+
+#_sub-content .contentpic img{width:70%; }
+
+#_sub-content .container{
+    height: 100%;
+    width: 100%;
+}
+
+/**offline 内容顶部的栏目**/
+#_sub-content .contentOfflineTop {height:40px; background:url("../pic/atm_bj_640.png")  ;background-size: 100% 110%;}
+#_sub-content #offlineFormID {padding-top:10%;}
+#_sub-content #offlineFormID .spanClass {font:normal normal 10px/20px 'HelveticaNeue';color: #8190A7;}
+#_sub-content #offlineFormID .myclass {font:normal normal 16px/20px 'HelveticaNeue';color: #8190A7;}
+#_sub-content #offlineFormID .myclass  span{float:right;text-align:right;width:40%;height:100%;display:inline-block;font:normal bold 16px/20px 'Microsoft YaHei';color: #2F313D;}
+#_sub-content .contentOfflineTop ul{width:100%; padding:0px;height:100%;}
+#_sub-content .contentOfflineTop ul li{font:normal bold 12px/40px 'HelveticaNeue'; width:50%; height:40px;text-align: center;float:left; list-style-type:none;}
+#_sub-content .contentOfflineTop ul li a{width:100%;height:100%;display: block; text-decoration:none;color:darkgray;}
+#_sub-content .contentOfflineTop ul li:nth-child(1) a{color:black;}
+
+/**thb 内容顶部的栏目  默认的显示四个  start**/
+#_sub-content .contentTopthb {height:40px;}
+#_sub-content .contentTopthb .topclass ul{width:100%; padding:0px;height:100%;}
+#_sub-content .contentTopthb .topclass ul li {font:normal bold 12px/40px 'Microsoft YaHei'; width:22%; height:40px;text-align: center;float:left; list-style-type:none;}
+#_sub-content .contentTopthb .topclass ul li a{width:100%;height:100%;display: block; text-decoration:none;color:darkgray;}
+#_sub-content .contentTopthb .topclass ul li:nth-child(1) a{color:black; border-bottom: 2px solid #309CFF;}
+#_sub-content .contentTopthb .topclass .liimagthb{padding-top:10px;}
+#_sub-content .contentpicthb {width:70%;min-height:100px; text-align:center; padding-top:10px;margin:auto; }
+
+/**thb 内容顶部的栏目  默认的显示四个  end**/
+
+/**thb 内容顶部的栏目  显示更多  start**/
+#_sub-content .contentTopthb .bottomclass ul{width:100%; padding:0px;height:100%;}
+#_sub-content .contentTopthb .bottomclass ul li { font:normal normal 18px/40px 'PingFangSC-Regular'; width:90%; height:40px;padding-left:48%; float:left; list-style-type:none;}
+#_sub-content .contentTopthb .bottomclass ul li a{width:100%;height:100%;display: block; text-decoration:none;color:#8190A7;}
+#_sub-content .contentTopthb .bottomclass .liimagthb{padding-top:10px;height: 40px; border-bottom:2px solid #EEF6FC;}
+#_sub-content .contentTopthb .bottomclass {display: none;}
+/**thb 内容顶部的栏目  显示更多  end**/
+
+/*更多内容的 start */
+#_sub-content .contentthb { width:90%;min-height:400px; text-align:center; padding-top:15px;margin:auto; display:none; }
+#_sub-content .contentthb ul{width:100%; padding:0px;height:100%;}
+#_sub-content .contentthb ul li {border:1px solid #EEF6FC;padding-top:10px; width:33%; height:10%;text-align: center;float:left; list-style-type:none;}
+#_sub-content .contentthb ul li p:nth-child(1) img { width:80%; margin-bottom: -10px;}
+#_sub-content .contentthb ul li p:nth-child(2) { font-family: 'HelveticaNeue-Medium';font-size: 11px;color: #ADBCD1;letter-spacing: -0.01px;}
+/*更多内容的 end */
+
+/*帮助页面 start*/
+#_sub-content .contenthelpTop {border-bottom:2px solid #EEF6FC;}
+#_sub-content .contenthelpTop p {font-family: 'HelveticaNeue-Medium';font-size: 18px;color: #2F313D;letter-spacing: -0.01px; margin:3%;}
+#_sub-content #offlineFormID div {width:100%;height:100%;margin-bottom:5px;font-family: 'HelveticaNeue';font-size: 16px; color: #330000; letter-spacing: 0.36px; line-height: 19px;}
+/*帮助页面 end*/
+
+
+/*atm start*/
+#_sub-content .contentatmTop {margin-left:3%;}
+#_sub-content .contentatmTop p {margin-bottom:0px;font:normal normal 24px/40px 'HelveticaNeue-Medium'; color: #2F313D;letter-spacing: -0.01px;}
+#_sub-content .contentatmTop span {font-family: 'HelveticaNeue';font-size: 12px; color: #8190A7;letter-spacing: -0.01px;}
+#main-content .contentfooot {padding-top:20px;margin-left:5%;margin-right:5%;font-family: HelveticaNeue;font-size: 12px;color: #647183;letter-spacing: 0.2px;}
+#main-content .contentfooot p {margin:5px;width:100%;height:100%;}
+#_sub-content .confirmClass {border-radius: 0px 0px 9px 9px; width:100%;height:60px;background: #309CFF;font:normal normal 18px/60px 'HelveticaNeue';color: #FFFFFF;letter-spacing: -0.01px;text-align: center;}
+/*atm end*/
+
+
+#_sub-content h2 {
+    padding-bottom: 50px;
+}
+#_sub-content select, #_sub-content a {
+    margin-bottom: 25px;
+}
+#_sub-content button, #_sub-content a {
+    width: 90%;
+}
+/* MARKETING CONTENT
+-------------------------------------------------- */
+
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+.marketing h2 {
+    font-weight: 700;
+    color: #333;
+}
+.marketing .col-lg-4 p {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.featurette {
+    margin: 180px 0;
+}
+
+/* Featurettes
+------------------------- */
+.featurette-divider {
+    margin: 80px 0; /* Space out the Bootstrap <hr> more */
+}
+
+/* Thin out the marketing headings */
+.featurette-heading {
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+    /* Navbar positioning foo */
+    .featurette-heading {
+        font-size: 50px;
+    }
+}
+
+@media (min-width: 992px) {
+    .featurette-heading {
+        margin-top: 120px;
+    }
+}
+
+
+
+
+
+@media screen and (orientation:landscape){
+    #_sub-content .contentpicthb {
+    width: 30%;
+    min-height: 50px; 
+    }
+    #_sub-content{
+        width: 70%;
+    }
+    .input-lg {
+    height: 35px;
+    padding: 5px 5px;
+    font-size: 15px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+    }
+
+    #_logo img {
+
+     padding: 10px 10px;
+     width: 20%;
+
+    }
+    .btn-lg {
+    padding: 5px 5px;
+    
+    }
+    #_sub-content .contentpic {  
+        margin-top: 10px;
+        height: 20%;
+        min-height: 80px;
+       
+    }
+    #_sub-content .contentpic img{  
+        width: 30%;
+    }
+    .form-panel{
+        height: 70%;
+
+    }
+
+.submitClass {
+    width: 92%;
+    margin-top: 5%;
+    color: #fff;
+    background-color: #5bc0de;
+    border-color: #46b8da;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+}
+
+
+@media screen and (orientation:portrait){
+
+    .input-msisdn{
+        width: 100%;
+        height: 35px;
+        padding: 5px 5px;
+        font-size: 12px;
+        line-height: 1.3333333;
+        border-radius: 6px;
+    }
+
+
+    .form-panel{
+        height: 80%;
+
+    }
+    .submitClass{
+        margin-top: 5%;
+
+    }
+    
+.submitClass {
+    width: 92%;
+    margin-top: 5%;
+    color: #fff;
+    background-color: #5bc0de;
+    border-color: #46b8da;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+}
+
+
+@media screen and (max-width: 320px){
+    #_sub-content .contentpic {  
+        margin-top: 0px;
+    }
+    .input-msisdn{
+        font-size: 11px;
+    }
+
+
+}
+
+@media screen and (min-width: 375px){
+    #_sub-content .contentpic {  
+        margin-top: 40px;
+    }
+
+    .input-msisdn{
+        font-size: 13px;
+    }
+
+}
+
+
+.input-msisdn {
+    height: 25px;
+    padding: 5px 5px;
+    font-size: 12px;
+    line-height: 1.3333333;
+    width: 95%;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}

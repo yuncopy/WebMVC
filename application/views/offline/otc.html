@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>BluePay</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="wrap">
+    <div id="main-content">
+        <div id="_logo">
+            <div class="container">
+                <?php if(!empty($prePage)){ ?>
+                <div style="color:#48A7FF;height: 20px;width: 150px;position: absolute;z-index: 2;top: 15px;">
+                    <a href="<?=$prePage?>"><img src="/img/Back.png" style="padding:0px 10px;margin:0px;width: 39px;height: 24px;float: left;"><!--pilih tarif yang lain--></a>
+                </div>
+                <?php } ?>
+                <div class="col-md-12">
+                    <img src="/img/bluePay_logo.png" class="center-block img-responsive">
+                </div>
+            </div>
+        </div>
+        <div id="_sub-content" style="box-shadow: 0px 0px 0px #FFFFFF; border-bottom: 2px dashed #D1EDFF; padding-bottom:10px;">
+            <div class="container">
+                <div class="contentatmTop">
+                    <p class="input-lg myclass" style="font-size:16px;">Bayar di Mini Market</p>
+                    <span class="input-lg myclass" style="font-size:11px;">Catatan : Silahkan Lakukan Pembayaran di Alfa Group (Alfamart, Alfamidi, LAWSON, DAN+DAN)</span>
+                </div>
+                <div class="col-md-12">
+                    <form id="offlineFormID" method="get" action="">
+                        <div class="input-lg myclass">Harga Barang <span>Rp.<?php  echo number_format($price);?></span></div>
+                        <div class="input-lg myclass">Blaya Transaksi <span id="myspanriceID"><?php echo $fee; ?></span></div>
+                        <div class="input-lg myclass">Jumlah Tagihan <span id="myspantotallID">Rp.<?php echo $price;?></span></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="_sub-content" style="box-shadow: 0px 0px 0px #FFFFFF; padding: 0px;">
+            <div class="container">
+                <div class="col-md-12">
+                    <form id="offlineFormID" method="get" action="" style="margin-top:-10px;padding-bottom:15px;">
+                        <div class="input-lg myclass" >Kode Transaksi:<hr  style="margin-top:5px;margin-bottom:5px;"/>
+                            <span style="width:100%; text-align:right; font-family: 'HelveticaNeue-Medium';font-size: 16px;color: deepskyblue;letter-spacing: -1px;line-height: 23px;">
+                                <?php  echo chunk_split($_GET['paymentcode'] ,4 , '&nbsp;&nbsp;'); ?>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <?php
+                if(isset($_GET['redirect_url']) && !empty($_GET['redirect_url'])){
+                    echo '<a href="'.trim($_GET['redirect_url']).'"><div class="confirmClass">OK</div></a>';
+            }
+            ?>
+        </div>
+        <div class="contentfooot">
+            <p>1.Pergi ke Alfa Group</p>
+            <p>2. Katakan Kepada Kasir Ingin Melakukan Pembayaran Transaksi Online “BLUEPAY”, Sebutkan Jumlah Tagihan (<?php echo $_GET['price'] + $fee;?>) dan Kode Transaksi (<?php echo $_GET['paymentcode'];?>)</p>
+            <P>3. Kasir Akan Melakukan Konfirmasi dan Menyebutkan Nominal Yang Harus Dibayar</P>
+            <P>4. Lakukan Pembayaran ke Kasir dan Dapatkan Struk Bukti Pembayaran, Setelah 1-3 Menit Barang Akan Otomatis Terkirim di Dalam Aplikasi</P>
+        </div>
+
+
+    </div>
+</div>
+<div id="footer">
+    <div class="sub-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-center">&copy; <a href="#" title="BlueMobile">Blue Mobile Tech</a> Co.,Ltd. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bluepay.js"></script>
+<script type="text/javascript">
+    var productId = "<?php echo $productId; ?>";
+    if (!showLogo(productId)) {
+        $("#_logo").css("display","none");
+    };
+</script>
+</body>
+</html>

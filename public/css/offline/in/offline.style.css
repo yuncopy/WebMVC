@@ -1,0 +1,34 @@
+.btn-group-banks{
+    text-align: center;
+    margin-top: 10px;
+	margin-bottom: 15px;
+
+}
+.btn-bank{
+	width: 30%;
+	max-width: 180px;
+	height: 44px;
+	line-height: 29.5px;
+	background-color: #a4d4e3;
+	border-color: #46b8da;
+	border-radius: 8px;
+	vertical-align:middle;
+	color: black;
+}
+
+.form-control{
+	margin-top: 20px;
+	margin-bottom: 20px;
+
+}
+.spanClass{
+	font-size: 11px;
+}
+
+.btn-info{
+	padding: 5px;
+}
+.row{
+	margin-top: 10px;
+	text-align: left;
+}

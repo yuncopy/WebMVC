@@ -1,0 +1,234 @@
+﻿html, body {
+	width:100%;
+	height: 100%;
+	background-color:#EEF6FC;
+	/* The html and body elements cannot have any padding or margin. */
+}
+header {
+	background-color: #309CFF;
+	line-height: 44px;
+	height: 44px;
+	color: #fff;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	position: fixed;
+	top: 0;
+	z-index: 10000;
+	width: 100%
+}
+
+header .icon-backright {
+	background: url("/img/bank/vn/arrow.png") 15px center no-repeat;
+	padding: 0;
+	width: 60px;
+	height: 44px;
+	background-size: 8px;
+	border: none;
+	position: absolute;
+	left: 0
+}
+
+header .g-refresh {
+	background: url("/img/bank/vn/refresh.png") 15px center no-repeat;
+	padding: 0;
+	width: 60px;
+	height: 44px;
+	background-size: 16px;
+	border: none;
+	position: absolute;
+	right: 0
+}
+.wap {
+	width: 100%;
+	margin: 0px auto;
+	padding-bottom:30px;
+}
+.log .jumbotron {
+	margin-top:30px;
+	padding-bottom:0px;
+	text-align: center;
+	background-color: transparent;
+}
+
+.info{
+	margin: auto;
+	border-radius: 9pt;
+	background-color: #FFFFFF;
+	box-shadow: 0px 2px 2px #309CFF;
+}
+.info .jumbotron {
+	margin:5px;
+	padding:20px 10px 5px 10px;
+	background-color: #FFFFFF;
+}
+
+
+.info .jumbotron .list-group .list-group-item {
+	position: relative;
+	display: block;
+	padding: 15px 15px;
+	margin-bottom: -1px;
+	background-color: #fff;
+	/*border: 1px solid #ddd;*/
+	border: none;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.info .jumbotron .list-group .list-group-item .badge {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+	color: #47A5FF;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	background-color: #fff;
+}
+
+.title .panel-body{
+	font-size: 20px;
+	font-weight: 600;
+	margin-top: 10px;
+	color:#FEB032;
+	margin-bottom:-20px;
+}
+
+.bank{
+	margin: auto;
+	border-radius: 9pt;
+	background-color: #FFFFFF;
+	box-shadow: 0px 2px 2px #309CFF;
+}
+.bank a{
+	text-decoration:none;
+}
+
+.bank .panel{
+	background-color: #fff;
+	border: none;
+
+}
+.bank .panel-heading{
+	background-color: #fff;
+
+}
+.bank .panel-default .icon-img {
+	width: 60px;
+	border-radius: 5px;
+	margin: 10px 12px;
+}
+.bank .pull-left {
+	float: left !important;
+}
+.bank img {
+	vertical-align: middle;
+	border: 0;
+}
+
+
+.bank .panel-title {
+	padding: 10px 15px;
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 16px;
+	color: inherit;
+	font-weight: normal !important;
+	line-height: 60px;
+
+}
+#onlineBanking button{
+	width: 100%;
+	margin: 0;
+}
+
+
+#onlineBanking img{
+	width: 100%;
+	height: 40px;
+	display: block;
+	margin: 0;
+	padding:0;
+	border: none;
+	border-radius: 0;
+}
+
+
+
+/***通知页面提示**/
+
+
+
+.bottom-btn1 {
+	margin-top: 10px;
+	padding: 0;
+	width: 100px;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #ff5a5a;
+	border-radius: 3px;
+	color: #fff;
+	font-size: 14px;
+	background-color: #ff5a5a;
+	display: inline;
+}
+
+.bottom-btn2 {
+	margin-left: 20px;
+	padding: 0;
+	width: 100px;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #ff5a5a;
+	border-radius: 3px;
+	color: #fff;
+	font-size: 14px;
+	background-color: #ff5a5a;
+	display: inline;
+}
+
+.content {
+	margin-top: 50px;
+
+}
+.content_center {
+	margin-top: 50px;
+	text-align: center;
+}
+
+.tips_img {
+	margin-top: 30px;
+	width: 28%;
+}
+.text{
+	font-weight: bold;
+	font-size: 20px;
+	color: gray;
+}
+
+
+/*浏览器的可视区域不小于980px*/
+@media screen and (min-width:980px){
+	#onlineBanking .thumbnail img
+	{
+		height:200px;
+	}
+
+}
+
+/*浏览器的可视区域在640px和980px之间*/
+@media screen and (min-width:640px) and (max-width:980px){
+	#onlineBanking .thumbnail img
+	{
+		height:120px;
+	}
+}
+
+
+
+
+
+
+

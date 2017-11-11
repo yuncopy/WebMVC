@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>BluePay</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/offline/in/offline.style.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div id="modal-alert" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index:99999">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:12pt;">
+            <div class="modal-body" >
+                <div class="container-fluid">
+                    <div id="_edit-CP">
+                        <div class="col-md-12" id="alert_cont">
+                            <img src="/img/success.png" alt="">
+                        </div>
+                        <div id="infoID" class="col-md-12" style="padding:10% 0PX;font-family: HelveticaNeue;font-size: 14px;color: #309CFF;letter-spacing: -0.01px;">
+                            Silahkan cek SMS anda untuk kode konfirmasi pembelian
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align:center; background: #309CFF; border-radius:0pt 0pt 11pt 11pt;font-family: HelveticaNeue;font-size: 18px;color: #FFFFFF;letter-spacing: -0.01px;">
+                OK
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-alert-loading" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index:99999">
+    <div class="modal-dialog">
+        <div class="modal-dialog" style="margin:50% auto; " align="center">
+            <img src="/img/loading-2.gif">
+        </div>
+    </div>
+</div>
+
+
+<div id="wrap">
+    <div id="main-content">
+        <div id="_logo">
+            <div class="container" style="width: 90%;">
+                <?php if(!empty($prePage)){ ?>
+                <div style="color:#48A7FF;height: 20px;width: 150px;position: absolute;z-index: 2;top: 15px;">
+                    <a href="<?=$prePage?>"><img src="/img/Back.png" style="padding:0px 10px;margin:0px;width: 39px;height: 24px;float: left;"><!--pilih tarif yang lain--></a>
+                </div>
+                <?php } ?>
+                <div class="col-md-12">
+                    <img src="/img/bluePay_logo.png" class="center-block img-responsive">
+                </div>
+            </div>
+        </div>
+        <div id="_sub-content">
+            <div class="container container-fluid" style="width: 100%;">
+                <div class="contentOfflineTop" >
+                    <ul>
+                        <li><a href="javascript:void(0);" id="tab_atm" onclick="selectPayType('atm')">Virtual Account</a></li>
+                        <li><a href="javascript:void(0);" id="tab_otc" onclick="selectPayType('otc')">Bayar di Mini Market</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-12">
+                    <div id="offlineFormID"  action="#">
+                        <div class="input-lg myclass">Harga Barang <span>Rp.<?php echo number_format($price);?></span></div>
+                        <div class="input-lg myclass" style="border-bottom: 1px solid #D1EDFF;">Blaya Transaksi <span id="myspanriceID"></span></div>
+                        <div class="input-lg myclass">Jumlah Tagihan <span id="myspantotallID"></span></div>
+                    </div>
+                    <div class=col-md-12">
+                        <input class="form-control phone-number" placeholder="Masukkan nomor telepon anda.">
+                    </div>
+                </div>
+                <div class="col-md-12  btn-group-banks btn-group">
+                    <!-- Permata  Mandiri  BNI  BCA  Other -->
+                    <div class="row">
+                        <div class="btn col-md-2 btn-bank " style="width: 49%;"  bankType="permata" ><img src="/img/offline/in/permatabank@3x.png" width="100%" height="29.5"></div>
+                        <div class="btn col-md-2 btn-bank static-unsupport" style="width: 49%;"  bankType="mandiri" ><img src="/img/offline/in/mandiri@3x.png" width="100%" height="29.5"></div>
+                    </div>
+                    <div class="row" >
+                        <div id="bni" class="btn col-md-2 btn-bank " style="width: 49%;"  bankType="bni"><img src="/img/offline/in/bni@3x.png" width="100%" height="29.5"></div>
+                        <div id="other" class="btn col-md-2 btn-bank static-unsupport" bankType="permata" style="width: 49%;" >Other</div>
+                    </div>
+                </div>
+                <br>
+                <center class = "container-atm">
+                    <button type="submit" class="btn btn-block btn-lg btn-info " id="btn_confirm_atm"  style= " width:100%;float:left;" onclick="doAction(this)">Konfirmasi</button>
+                </center>
+                <center class = "container-otc" style="display:none;">
+                    <button type="submit" class="btn btn-block btn-lg btn-info " id="btn_confirm_otc" onclick="doAction(this,0)">Konfirmasi</button>
+                </center>
+                <span class="spanClass"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="footer">
+    <div class="sub-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-center">&copy; <a href="#" title="BlueMobile">Blue Mobile Tech</a> Co.,Ltd. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script  src="/js/bluepay.js"></script>
+<script  src="/js/offline/in/main.js"></script>
+<script>
+    init({
+        price:"<?=$price?>",
+        productId:"<?=$productId?>",
+        transactionId:"<?=$transactionId?>",
+        propsName:"<?=$propsName?>",
+        promotionId:"<?=$promotionId?>",
+        payType:"<?=$payType?>",
+        redirectUrl:"<?=$redirectUrl?>",
+        prePage:"<?=$prePage?>",
+        customerId:"<?=$customerId?>",
+        msisdn:"<?=$msisdn?>",
+        isTaxInclusive:"<?=$isTaxInclusive?>",
+        bankType:"<?=$bankType?>",
+        selectedBank:"<?=$selectedBank?>",
+        isShowLogo:"<?=$isShowLogo?>",
+        offlineObj:'<?=$offlineObj?>',
+        status:'<?=$status?>',
+        description:'<?=$description?>'
+    });
+</script>
+</body>
+</html>
