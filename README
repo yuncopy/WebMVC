@@ -1,1 +1,29 @@
+composer 自动载入的四种方式
 
+
+首先引入autoload.php，在主文件 index.php 中。
+
+require 'vendor/autoload.php';
+
+PSR-4（推荐）
+在composer.json里是这样进行配置的：
+
+{
+  "autoload": {
+    "psr-4": {
+      "Foo\\": "src/"
+    }
+  }
+}
+其中Foo\\:"src/"表示，将Foo空间名绑定到/project/src这个目录下
+执行composer install更新自动加载。照PSR-4的规则，当在index.php中
+试图new Foo\Bar\Baz这个class时，composer会自动去寻找 "src/Bar/Baz.php" 这个文件，如果它存在则进行加载。
+
+NOTE:另外注意PSR-4和PSR-0的配置里，"Foo\"结尾的命名空间分隔符必须加上并且进行转义，以防出现"Foo"匹配到了"FooBar"这样的意外发生。
+
+
+PS:需要注意一下！
+
+#生成环境下使用
+composer dump-atoload -o
+#这里的意思是composer dump-autoload --optimize，不是用的话会损失性能。
