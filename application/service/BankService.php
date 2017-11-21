@@ -7,6 +7,7 @@
  */
 namespace service;
 
+use Illuminate\Validation\Rules\In;
 use Yaf\Config\Ini;
 use Yaf\Request_Abstract;
 
@@ -26,6 +27,9 @@ class BankService extends CommonService{
     private $msisdn = 'BLUEGUEST';
     private $str_url = null;
     private $bank_id;//越南银行的银行ID
+    private $country;//测试环境传递的参数
+    private $bankCardNo;//测试环境传递的参数
+    private $orderId;//测试环境传递的参数
     private $_hidden_blue_pay_log_productId = [812,622,518];//当CP使用泰国银行的时候，需要隐藏bluepay_logo的产品id
     const SMS_CP_CMD = 6;//银行CP传递过来的命令字
     const IN_BANK_TAX_FEE = 6500;//印尼银行手续费
@@ -37,30 +41,23 @@ class BankService extends CommonService{
     /**
      * 参数验证
      * @return bool
-     * @throws \Exception
+     * @throws \ParamsException
      */
-    private function validata($name){
-        if(in_array($name,['response'])){
-            return true;
-        }
+    protected function validata(){
         if(CT == 'th'){
             if(is_null($this->getKeyword())){
                 if(empty($this->getProductId())){
-                    \Logs::debug("validata_error")->addInfo('商品ID为空',(array)$this);
-                    throw new \Exception("parameter error [productId]",400);
+                    throw new \ParamsException("parameter error [productId]",400);
                 }
                 if(empty($this->getPrice())){
-                    \Logs::debug("validata_error")->addInfo('商品价格为空',(array)$this);
-                    throw new \Exception("parameter error [price]",400);
+                    throw new \ParamsException("parameter error [price]",400);
                 }
                 if(empty($this->getTransactionId())){
-                    \Logs::debug("validata_error")->addInfo('交易号为空',(array)$this);
-                    throw new \Exception("parameter error [transactionId]",400);
+                    throw new \ParamsException("parameter error [transactionId]",400);
                 }
             }else{
                 if(substr($this->getKeyword(), 0,1)!=self::SMS_CP_CMD){
-                    \Logs::debug("validata_error")->addInfo('关键字错误',(array)$this);
-                    throw new \Exception("parameter error [keyword]",400);
+                    throw new \ParamsException("parameter error [keyword]",400);
                 }
                 //验证成功之后设置产品ID跟交易ID
                 $this->setProductId(substr($this->getKeyword(), 1,4));
@@ -68,16 +65,18 @@ class BankService extends CommonService{
             }
         }else{
             if(empty($this->getProductId())){
-                \Logs::debug("validata_error")->addInfo('商品ID为空',(array)$this);
-                throw new \Exception("parameter error [productId]",400);
+                throw new \ParamsException("parameter error [productId]",400);
             }
             if(empty($this->getPrice())){
-                \Logs::debug("validata_error")->addInfo('商品价格为空',(array)$this);
-                throw new \Exception("parameter error [price]",400);
+                throw new \ParamsException("parameter error [price]",400);
             }
             if(empty($this->getTransactionId())){
-                \Logs::debug("validata_error")->addInfo('交易号为空',(array)$this);
-                throw new \Exception("parameter error [transactionId]",400);
+                throw new \ParamsException("parameter error [transactionId]",400);
+            }
+        }
+        if(CT == 'test'){
+            if(empty($this->getCountry())){
+                throw new \ParamsException("parameter error [country]",400);
             }
         }
         return true;
@@ -89,17 +88,11 @@ class BankService extends CommonService{
      * @return array
      */
     public function __call($name,$arg=null){
-        try{
-            if($this->validata($name)){
-                $action = $name . CT;
-                if (method_exists($this, $action)) {
-                    return $this->$action($arg[0]);
-                }
-                throw new \Exception("server error.",400);
-            }
-        }catch (\Exception $e){
-            return ['status'=>$e->getCode(),'description'=>$e->getMessage()];
+        $action = $name . CT;
+        if (method_exists($this, $action)) {
+            return $this->$action($arg[0]);
         }
+        throw new \ParamsException("server error.",400);
     }
 
     /**
@@ -131,86 +124,11 @@ class BankService extends CommonService{
             'transactionid' => $this->getTransactionId(),
             'propsName' => $this->getPropsName(),
             'customerId' => $this->getCustomerId(),
-            'taxFee'=>self::IN_BANK_TAX_FEE
+            'taxFee'=>self::IN_BANK_TAX_FEE,
+            'str'=>str_shuffle("1234567").date('s')
         ];
         \Logs::debug("bank" . CT)->addInfo("", $data);
         return $data;
-    }
-
-    /**
-     * 印尼银行充值提交逻辑处理
-     * @param Request_Abstract $request
-     * @return string
-     */
-    public function submitin(){
-        //2. 接收参数并数据过滤
-        $data['productId'] = $this->getProductId();
-        $data['promotionId'] = $this->getPromotionId();
-        $data['price'] = $this->getPrice();
-        $data['transactionid'] = $this->getTransactionId();
-        $data['propsName'] = $this->getPropsName();
-        $data['msisdn'] = '';
-        $data['payChannel'] = 2;
-        $data['customerId'] = $this->getCustomerId();
-        $data['cardNumber'] = $this->getCc_number();
-        $data['responseToken'] = $this->getResponseToken();
-        $data['uniqueCode'] = $this->getCHALLENGE_CODE_3();
-        $data['reqEmail'] = $this->getEmail();
-        $data['reqName'] = $this->getReqName();
-        $str = 'http://52.221.94.242:8160/charge/paysByBank/createOrder?';
-        $pam = http_build_query($data);
-        //4. 获取该用户的md5Sf
-        $key = \ProductInfoModel::find($data['productId'])->producter->md5Suf;
-        $mdValue = md5($pam.$key);
-        $encrypt = '&encrypt=' . $mdValue;
-        //5. 拼接请求URL
-        $url = $str.$pam.$encrypt;
-        $pamInfo = $pam.$encrypt;
-        //6. CRUL请求
-        $resJosn = CommonService::httpClient()->request("GET", $url)->getBody();
-        //7. 处理结果
-        $resArr = json_decode($resJosn, true);
-        if (isset($resArr['status']) && !empty($resArr['status'])) {
-            //200 成功  601 余额不足  400 参数错误  631 token 错误  600 银行系统异常
-            $statusArr = array('s200' => '成功', 's400' => '参数错误', 's600' => '银行系统异常', 's601' => '余额不足', 's631' => 'token 错误');
-            $status = trim($resArr['status']);
-            $info = ['pamInfo' => $pamInfo, "status" => $status . '-' . $statusArr['s' . $status]];
-            if ($status == 200) {
-                \Logs::debug("doku_succcess")->addInfo("", $info);
-            } else {
-                \Logs::debug("doku_error")->addInfo("", $info);
-            }
-        } else {
-            \Logs::debug("doku_error")->addInfo("", ['pamInfo' => $pamInfo, "desc" => "没有返回状态码"]);
-        }
-        return ['url'=>"/c=bank&a=response?".http_build_query($resArr)];
-    }
-
-    /**
-     * 印尼银行充值结果响应
-     * @param Request_Abstract $request
-     * @return array
-     */
-    public function responsein(Request_Abstract $request)
-    {
-        $statusArr = array('s540' => 'Bank card number error', 's200' => 'Success', 's400' => 'Parameter error', 's600' => 'Transaction failed', 's601' => 'Insufficient balance', 's631' => 'token error', 's500' => 'Payment error');
-        //$statusArr  = array('s540'=>'银行卡号错误','s200'=>'成功','s400'=>'参数错误','s600'=>'交易失败','s601'=>'余额不足','s631'=>'token 错误');
-        $status = $request->getQuery("status", 2);
-        $imgValue = ($status == 200) ? 1 : 2;
-        $myValue = $statusArr['s' . $status];
-        $mystatus = 's' . $status;
-        if(!in_array($mystatus,$statusArr)){
-            $myValue = 'Payment error';
-        }
-        return[
-            'myValue'=>$myValue,
-            'imgValue'=>$imgValue,
-            'msgValue'=>$myValue,
-            'transaction_id'=>'',
-            'time'=>$request->getQuery("time"),
-            'price'=>$request->getQuery("price"),
-            'bt_id'=>$request->getQuery("bt_id")
-        ];
     }
     /**
      * 越南
@@ -258,13 +176,13 @@ class BankService extends CommonService{
             $str .= '&propsName=' . urlencode($this->getPropsName());
             $str .= '&payChannel=' . $payChannel;
             //隐藏提交值
-            $input_str = '<input type="hidden" name="str_url" value="' . CommonService::crypt()->encrypt($str, DESKEY, DESIV) . '">
-                  <input type="hidden" name="productId" value="' . CommonService::crypt()->encrypt($this->getProductId(), DESKEY, DESIV) . '">';
+            $input_str = '<input type="hidden" name="str_url" value="' . $this->crypt()->encrypt($str, DESKEY, DESIV) . '">
+                       <input type="hidden" name="productId" value="' . $this->crypt()->encrypt($this->getProductId(), DESKEY, DESIV) . '">';
             $comCfg = new Ini(CFG."/config.common.ini");
             $bankIds = $comCfg->get("bank")->get("id")->toArray();
             $banks = [];
             foreach($bankIds as $k => $v){
-                $banks[$k] = CommonService::crypt()->encrypt($v, DESKEY, DESIV);
+                $banks[$k] =$this->crypt()->encrypt($v, DESKEY, DESIV);
             }
             if(count($banks)>8){
                 $banks = array_chunk($banks,3,TRUE);
@@ -276,9 +194,91 @@ class BankService extends CommonService{
                 'promotionId'=>$this->getPromotionId(),
                 'propsName'=>$this->getPropsName(),
                 'price'=>$this->getPrice(),
-                'banks'=>$banks
+                'banks'=>$banks,
+                'str'=>str_shuffle("1234567").date('s')
             ];
         }
+    }
+
+    /**
+     * 测试
+     * @return array
+     */
+    private function indextest(){
+        $data['price'] = $this->getPrice();
+        $data['productId'] = $this->getProductId();
+        $data['transactionId'] = $this->getTransactionId();
+        $data['promotionId'] = $this->getPromotionId();
+        $data['bankType'] = $this->getCountry();
+        $path = 'http://120.76.101.146:8160/charge/test/testBankCreateOrder?';
+        $str = http_build_query($data);
+        $key = \ProductInfoModel::find($this->getProductId())->producter->md5Suf;
+        $hash =md5($str.$key);
+        $encrypt = '&encrypt='.$hash;
+        $url = $path.$str.$encrypt;
+        \Logs::debug("testBankCreateOrder")->addInfo("银行测试下单",['url'=>$url]);
+        $resultJson = $this->httpClient()->request("GET",$url)->getBody();
+        $result = json_decode($resultJson,true);
+        if($result['status'] != 201){
+            return ['status'=>400,'description'=>(new Ini(CFG."/config.lang.ini"))->get($result['status'])];
+        }else{
+            return [
+                'price'=>$this->getPrice(),
+                'transactionId'=>$this->getTransactionId(),
+                'productId'=>$this->getProductId(),
+                'country'=>$this->getCountry(),
+                'orderId'=>$result['orderId']
+            ];
+        }
+    }
+
+    /**
+     * 印尼银行充值提交逻辑处理
+     * @param Request_Abstract $request
+     * @return string
+     */
+    public function submitin(){
+        //2. 接收参数并数据过滤
+        $data['productId'] = $this->getProductId();
+        $data['promotionId'] = $this->getPromotionId();
+        $data['price'] = $this->getPrice();
+        $data['transactionid'] = $this->getTransactionId();
+        $data['propsName'] = $this->getPropsName();
+        $data['msisdn'] = '';
+        $data['payChannel'] = 2;
+        $data['customerId'] = $this->getCustomerId();
+        $data['cardNumber'] = $this->getCc_number();
+        $data['responseToken'] = $this->getResponseToken();
+        $data['uniqueCode'] = $this->getCHALLENGE_CODE_3();
+        $data['reqEmail'] = $this->getEmail();
+        $data['reqName'] = $this->getReqName();
+        $str = 'http://52.221.94.242:8160/charge/paysByBank/createOrder?';
+        $pam = http_build_query($data);
+        //4. 获取该用户的md5Sf
+        $key = \ProductInfoModel::find($data['productId'])->producter->md5Suf;
+        $mdValue = md5($pam.$key);
+        $encrypt = '&encrypt=' . $mdValue;
+        //5. 拼接请求URL
+        $url = $str.$pam.$encrypt;
+        $pamInfo = $pam.$encrypt;
+        //6. CRUL请求
+        $resJosn = CommonService::httpClient()->request("GET", $url)->getBody();
+        //7. 处理结果
+        $resArr = json_decode($resJosn, true);
+        if (isset($resArr['status']) && !empty($resArr['status'])) {
+            //200 成功  601 余额不足  400 参数错误  631 token 错误  600 银行系统异常
+            $statusArr = array('s200' => '成功', 's400' => '参数错误', 's600' => '银行系统异常', 's601' => '余额不足', 's631' => 'token 错误','s409'=>'商品不存在');
+            $status = trim($resArr['status']);
+            $info = ['pamInfo' => $pamInfo, "status" => $status . '-' . $statusArr['s' . $status]];
+            if ($status == 200) {
+                \Logs::debug("doku_succcess")->addInfo("", $info);
+            } else {
+                \Logs::debug("doku_error")->addInfo("", $info);
+            }
+        } else {
+            \Logs::debug("doku_error")->addInfo("", ['pamInfo' => $pamInfo, "desc" => "没有返回状态码"]);
+        }
+        return ['url'=>"/c=bank&a=response?".http_build_query($resArr+['productId'=>$this->getProductId(),'transactionId'=>$this->getTransactionId()])];
     }
     /**
      * 越南
@@ -325,37 +325,57 @@ class BankService extends CommonService{
             return ['status'=>404,'msg'=>'Request error [Transaction failed]'];
         }
     }
+
     /**
-     * @return null
+     * @return array
      */
-    public function getProductId()
-    {
-        return $this->productId;
+    private function submittest(){
+        $data['productId'] = $this->getProductId();
+        $data['orderId'] = $this->getOrderId();
+        $data['cardNo'] = $this->getBankCardNo();
+        $path = 'http://120.76.101.146:8160/charge/test/testBankPayOrder?';
+        $str =  http_build_query($data);
+        $key = \ProductInfoModel::find($this->getProductId())->producter->md5Suf;
+        $hash =md5($str.$key);
+        $encrypt = '&encrypt='.$hash;
+        $url = $path.$str.$encrypt;
+        \Logs::debug("testBankPay")->addInfo("测试银行支付",[$url]);
+        $resJosn = $this->httpClient()->request("GET",$url)->getBody();
+        $result = json_decode($resJosn,true);
+        if ($result["status"] == "200") {
+            return $result;
+        }
+        return ['status'=>$result['error']['code'],'description'=>(new Ini(CFG."/config.lang.ini"))->get($result['error']['code'])];
     }
 
     /**
-     * @param null $productId
+     * 印尼银行充值结果响应
+     * @param Request_Abstract $request
+     * @return array
      */
-    public function setProductId($productId)
+    public function responsein(Request_Abstract $request)
     {
-        $this->productId = $productId;
+        $statusArr = array('s540' => 'Bank card number error', 's200' => 'Success', 's400' => 'Parameter error', 's600' => 'Transaction failed', 's601' => 'Insufficient balance', 's631' => 'token error', 's500' => 'Payment error');
+        //$statusArr  = array('s540'=>'银行卡号错误','s200'=>'成功','s400'=>'参数错误','s600'=>'交易失败','s601'=>'余额不足','s631'=>'token 错误');
+        $status = $request->getQuery("status", 2);
+        $imgValue = ($status == 200) ? 1 : 2;
+        $myValue = $statusArr['s' . $status];
+        $mystatus = 's' . $status;
+        if(!in_array($mystatus,$statusArr)){
+            $myValue = 'Payment error';
+        }
+        return[
+            'myValue'=>$myValue,
+            'imgValue'=>$imgValue,
+            'msgValue'=>$myValue,
+            'transaction_id'=>'',
+            'time'=>$request->getQuery("time"),
+            'price'=>$request->getQuery("price"),
+            'bt_id'=>$request->getQuery("bt_id")
+        ];
     }
 
-    /**
-     * @return null
-     */
-    public function getTransactionId()
-    {
-        return $this->transactionId;
-    }
 
-    /**
-     * @param null $transactionId
-     */
-    public function setTransactionId($transactionId)
-    {
-        $this->transactionId = $transactionId;
-    }
 
     /**
      * @return null
@@ -590,5 +610,50 @@ class BankService extends CommonService{
     public function setStr_url($str_url)
     {
         $this->str_url = $str_url;
+    }
+    /**
+     * @return mixed
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param mixed $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+    /**
+     * @return mixed
+     */
+    public function getBankCardNo()
+    {
+        return $this->bankCardNo;
+    }
+
+    /**
+     * @param mixed $bankCardNo
+     */
+    public function setBankCardNo($bankCardNo)
+    {
+        $this->bankCardNo = $bankCardNo;
+    }
+    /**
+     * @return mixed
+     */
+    public function getOrderId()
+    {
+        return $this->orderId;
+    }
+
+    /**
+     * @param mixed $orderId
+     */
+    public function setOrderId($orderId)
+    {
+        $this->orderId = $orderId;
     }
 }

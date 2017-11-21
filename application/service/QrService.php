@@ -112,37 +112,7 @@ class QrService extends CommonService{
         $this->telco = $telco;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTransactionId()
-    {
-        return $this->transactionId;
-    }
 
-    /**
-     * @param mixed $transactionId
-     */
-    public function setTransactionId($transactionId)
-    {
-        $this->transactionId = $transactionId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getProductId()
-    {
-        return $this->productId;
-    }
-
-    /**
-     * @param mixed $productId
-     */
-    public function setProductId($productId)
-    {
-        $this->productId = $productId;
-    }
 
     /**
      * @return mixed

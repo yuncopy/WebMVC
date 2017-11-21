@@ -14,7 +14,7 @@ class Encypt{
      * @param $productId
      * @return string
      */
-    public static function encrypt(string $data,$productId){
+    public static function encrypt($data,$productId){
         self::setKey($productId);
         $ivlen = openssl_cipher_iv_length(self::$cipher);
         $iv = openssl_random_pseudo_bytes($ivlen);

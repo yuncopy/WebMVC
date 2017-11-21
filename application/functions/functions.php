@@ -81,13 +81,29 @@ function isAjax()
  * 获取国家
  */
 function getCt(){
-    if(\Yaf\Dispatcher::getInstance()->getRequest()->isCli()){
+    if(isCli()){
         $ct = Crontab::$options['c'];
     }else{
         $name = explode(".",\Yaf\Dispatcher::getInstance()->getRequest()->getServer("SERVER_NAME"));
         $ct = reset($name);
     }
     return $ct;
+}
+
+/**
+ * 是否是CLI
+ * @return bool
+ */
+function isCli(){
+    return \Yaf\Dispatcher::getInstance()->getRequest()->isCli();
+}
+
+/**
+ * @param array $array
+ * @return string
+ */
+function juu($array = []){
+    return json_encode($array,JSON_UNESCAPED_UNICODE );
 }
 
 

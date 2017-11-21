@@ -20,7 +20,7 @@ class Bootstrap extends Bootstrap_Abstract{
      */
     public function _initLoader(Dispatcher $dispatcher){
         Loader::import(APP_PATH . "/vendor/autoload.php");
-        $dispatcher->getInstance()->setErrorHandler("myErrorHandle");
+        $dispatcher->getInstance()->setErrorHandler("myErrorHandle",E_ALL);
         register_shutdown_function("myShutdownFunc");
     }
 
@@ -29,6 +29,10 @@ class Bootstrap extends Bootstrap_Abstract{
      * @param Dispatcher $dispatcher
      */
     public function _initDefine(Dispatcher $dispatcher){
+        defined("__CSS__") or define("__CSS__",APP_PATH."/public/css/");
+        defined("__JS__") or define("__JS__",APP_PATH."/public/js/");
+        defined("__IMG__") or define("__IMG__",APP_PATH."/public/img/");
+        defined("__FONTS__") or define("__FONTS__",APP_PATH."/public/fonts/");
         defined("CONF_PATH") or define("CONF_PATH",APP_PATH."/conf/");
         defined("STROAGE_PATH") or define("STROAGE_PATH",APP_PATH."/storage/");
         defined("LOG_PATH") or define("LOG_PATH",STROAGE_PATH."/log/");
@@ -99,6 +103,9 @@ class Bootstrap extends Bootstrap_Abstract{
         //钱包路由修改
         $walletRoute = new Regex('#bluepay/wallet.php#',['module'=>'index','controller'=>'wallet','action'=>'index'],[],[]);
         $router->addRoute('walletRoute',$walletRoute);
+        //测试银行路由修改
+        $testRoute = new Regex('#bank/offline.php#',['module'=>'index','controller'=>'offline','action'=>'test'],[],[]);
+        $router->addRoute('testtRoute',$testRoute);
     }
 
     /**
@@ -121,12 +128,11 @@ class Bootstrap extends Bootstrap_Abstract{
     }
 
     /**
-     * 注册插件
+     * 注册twig插件
      * @param Dispatcher $dispatcher
      */
     public function _initPlugin(Dispatcher $dispatcher) {
-        //注册一个插件
-        $objRoutePlugin = new RoutePlugin();
-        $dispatcher->registerPlugin($objRoutePlugin);
+        $twigObject = new TwigPlugin();
+        $dispatcher->registerPlugin($twigObject);
     }
 }

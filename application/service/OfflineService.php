@@ -28,71 +28,62 @@ class OfflineService extends CommonService{
     private $_all_pay_type = ['atm','otc'];
     private $_all_bank_type = ['permata'=>1,'mandiri'=>1,'bni'=>3,'other'=>1];
     private $_hidden_blue_pay_log_productId = [812,622,518];//需要隐藏bluepay_logo的产品id
+    private $paymentCode;
+    private $cardNo;
 
     /**
      * 首页
      * @return array
      */
     public function index(){
-        try{
-            if($this->validata()){
-               if($this->getUi() == self::NON_UI_PARAM){
-                    return $this->offline();
-               }else{
-                   return [
-                       "payType"=>$this->getPayType(),
-                       "productId"=>$this->getProductId(),
-                       "promotionId"=>$this->getPromotionId(),
-                       "transactionId"=>$this->getTransactionId(),
-                       "price"=>$this->getPrice(),
-                       "customerId"=>$this->getCustomerId(),
-                       "propsName"=>$this->getPropsName(),
-                       "bankType"=>$this->getBankType(),
-                       "msisdn"=>$this->getMsisdn(),
-                       'isShowLogo'=>$this->isShowLogo(),
-                       'offlineObj'=>$this->checkIsTaxInclusive(),
-                       'prePage'=>$this->getPre_page(),
-                       'redirectUrl'=>$this->getRedirect_url()
-                   ];
-               }
-            }
-        }catch (\Exception $e){
-            return ['status'=>$e->getCode(),'description'=>$e->getMessage()];
+        if($this->getUi() == self::NON_UI_PARAM){
+            return $this->offline();
+        }else{
+            return [
+                "payType"=>$this->getPayType(),
+                "productId"=>$this->getProductId(),
+                "promotionId"=>$this->getPromotionId(),
+                "transactionId"=>$this->getTransactionId(),
+                "price"=>$this->getPrice(),
+                "customerId"=>$this->getCustomerId(),
+                "propsName"=>$this->getPropsName(),
+                "bankType"=>$this->getBankType(),
+                "msisdn"=>$this->getMsisdn(),
+                'isShowLogo'=>$this->isShowLogo(),
+                'offlineObj'=>$this->checkIsTaxInclusive(),
+                'prePage'=>$this->getPre_page(),
+                'redirectUrl'=>$this->getRedirect_url()
+            ];
         }
     }
 
     /**
      * 数据验证
      * @return bool
-     * @throws \Exception
+     * @throws \ParamsException
      */
-    private function validata(){
-        if(CT != 'in'){
-            \Logs::debug("validata_error")->addInfo('域名错误',(array)$this);
-            throw new \Exception("error country.",400);
+    protected function validata(){
+        if(!in_array(CT,['in','test'])){
+            throw new \ParamsException("error country.",400);
         }
         if(empty($this->getProductId())){
-            \Logs::debug("validata_error")->addInfo('商品ID为空',(array)$this);
-            throw new \Exception("parameter error [productId]",400);
+            throw new \ParamsException("parameter error [productId]",400);
         }
         if(empty($this->getPrice())){
-            \Logs::debug("validata_error")->addInfo('商品价格为空',(array)$this);
-            throw new \Exception("parameter error [price]",400);
+            throw new \ParamsException("parameter error [price]",400);
         }
         if($this->getPrice() < 10000 ){
-            throw new \Exception("price error,is too low.",400);
+            throw new \ParamsException("price error,is too low.",400);
         }
         if ($this->getPrice() > 100000000){
-            throw new \Exception("price error,is too high.",400);
+            throw new \ParamsException("price error,is too high.",400);
         }
         if(empty($this->getTransactionId())){
-            \Logs::debug("validata_error")->addInfo('交易号为空',(array)$this);
-            throw new \Exception("parameter error [transactionId]",400);
+            throw new \ParamsException("parameter error [transactionId]",400);
         }
         if($this->getUi() == self::NON_UI_PARAM){
             if(empty($this->getPayType())){
-                \Logs::debug("validata_error")->addInfo('支付方式为空',(array)$this);
-                throw new \Exception("parameter error [payType]",400);
+                throw new \ParamsException("parameter error [payType]",400);
             }
             //atm必须要填写手机号码，默认给的手机号码是因为
             if($this->getPayType() == 'atm'){
@@ -101,8 +92,7 @@ class OfflineService extends CommonService{
                     if($this->getMsisdn() == '08181234567'){
                         $this->setMsisdn(null);
                         if(empty($this->getMsisdn())&&$taxInclusive->isStatic==1){
-                            \Logs::debug("validata_error")->addInfo('静态VA手机号不能为空',(array)$this);
-                            throw new \Exception("parameter error [msisdn]",400);
+                            throw new \ParamsException("parameter error [msisdn]",400);
                         }
                     }
                 }
@@ -178,6 +168,49 @@ class OfflineService extends CommonService{
         $result = ['status'=>$result['status'],'description'=>$langCfg->get($result['status'])];
         return $result;
     }
+
+    /**
+     * @return array
+     */
+    public function test(){
+        return [
+            'productId'=>$this->getProductId(),
+            'price'=>$this->getPrice(),
+            'transactionId'=>$this->getTransactionId(),
+            'payType'=>$this->getPayType(),
+            'paymentCode'=>$this->getPaymentCode(),
+        ];
+    }
+
+    /**
+     * 测试
+     */
+    public function testOffline(){
+        if(empty($this->getPaymentCode())){
+            return ['status'=>400,'description'=>"paymentCode 不能为空"];
+        }
+        $data['productId'] = $this->getProductId();
+        $data['provider'] = $this->getPayType();
+        $data['paymentCode'] = $this->getPaymentCode();
+        $data['price'] = $this->getPrice();
+        $data['cardNo'] = $this->getCardNo();
+        $path = 'http://120.76.101.146:8160/charge/test/testOfflineOrderPay?';
+        $str = http_build_query($data);
+        $key = \ProductInfoModel::find($this->getProductId())->producter->md5Suf;
+        $hash =md5($str.$key);
+        $encrypt = '&encrypt='.$hash;
+        $url = $path.$str.$encrypt;
+        \Logs::debug("testOfflinePay")->addInfo("银行offline测试",['url'=>$url]);
+        $resJosn = $this->httpClient()->request("GET",$url)->getBody();
+        $result = json_decode($resJosn,true);
+        if ($result["status"] == "200") {
+            return $result;
+        }
+        if(isset($result['error'])){
+            return ['status'=>$result['error']['code'],'description'=>(new Ini(CFG."/config.lang.ini"))->get($result['error']['code'])];
+        }
+        return ['status'=>$result['status'],'description'=>(new Ini(CFG."/config.lang.ini"))->get($result['status'])];
+    }
     /**
      * 判断是否显示bluepay_logo
      * @return bool
@@ -202,38 +235,6 @@ class OfflineService extends CommonService{
     public function setPre_page($pre_page)
     {
         $this->pre_page = $pre_page;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getProductId()
-    {
-        return $this->productId;
-    }
-
-    /**
-     * @param mixed $productId
-     */
-    public function setProductId($productId)
-    {
-        $this->productId = $productId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTransactionId()
-    {
-        return $this->transactionId;
-    }
-
-    /**
-     * @param mixed $transactionId
-     */
-    public function setTransactionId($transactionId)
-    {
-        $this->transactionId = $transactionId;
     }
 
     /**
@@ -377,6 +378,36 @@ class OfflineService extends CommonService{
     public function setMsisdn($msisdn)
     {
         $this->msisdn = $msisdn;
+    }
+    /**
+     * @return mixed
+     */
+    public function getPaymentCode()
+    {
+        return $this->paymentCode;
+    }
+
+    /**
+     * @param mixed $paymentCode
+     */
+    public function setPaymentCode($paymentCode)
+    {
+        $this->paymentCode = $paymentCode;
+    }
+    /**
+     * @return mixed
+     */
+    public function getCardNo()
+    {
+        return $this->cardNo;
+    }
+
+    /**
+     * @param mixed $cardNo
+     */
+    public function setCardNo($cardNo)
+    {
+        $this->cardNo = $cardNo;
     }
 
 }

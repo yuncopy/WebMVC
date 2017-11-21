@@ -74,6 +74,7 @@ function setConfig($config){
  * @param $k
  */
 function changeTelcos($telco,$k=0){
+    showLoading();
     if($telco!=telco){
         $.ajax({
             type: "GET",
@@ -92,7 +93,6 @@ function changeTelcos($telco,$k=0){
             }
         });
     }
-    showLoading();
     var obj = $(this);
     obj.css('color','darkgray');
     //根据用户选择的运营商切换运营商。
@@ -117,7 +117,7 @@ function changeTelcos($telco,$k=0){
     if (!isHwChannel) {
         //直连
         $("#phone_prefix").empty().append("");
-        $("#btn_submit").attr("href",href);
+        $("#btn_submit").attr("href",HtmlUtil.htmlDecode(href));
         $("#btn_submit").removeAttr("onclick");
     }else{
         //华为通道
@@ -181,15 +181,6 @@ function hiddenInfo(redirectUrl=''){
         window.location.href = redirectUrl;
     };
 }
-//错误提示框
-function displayInfo(info,pic_name='alert_error'){
-    $('#modal_confirm').unbind("click");
-    $('#modal-alert #infoID').empty().append(info);
-    $('#modal-alert #alert_cont img').prop('src','/img/'+pic_name+'.png');
-    $('#modal-alert').modal();
-    $("#modal_confirm").empty().append("OK");
-    $("#modal_confirm").attr("href","#");
-}
 function displayInfoForSms(href){
     $("#modal_confirm").attr("href",href);
     $("#modal_confirm").empty().append("Send now");
@@ -200,15 +191,4 @@ function displayInfoForSms(href){
 
     });
 }
-/**
- * 显示加载动画
- */
-function showLoading(){
-    $('#modal-alert-loading').modal();
-}
-/**
- * 关闭加载动画
- */
-function hideLoading(){
-    $('#modal-alert-loading').modal('hide');
-}
+

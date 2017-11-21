@@ -22,12 +22,12 @@ class CashcardController extends  CommonController{
         $result = $cashCardService->index();
         if($cashCardService->getUi() == $cashCardService::NON_UI_PARAM){
             Dispatcher::getInstance()->disableView();
-            $this->getResponse()->setBody(json_encode($result,JSON_UNESCAPED_UNICODE));
+            $this->getResponse()->setBody(juu($result));
         }else{
             if(IS_AJAX){
                 Dispatcher::getInstance()->disableView();
                 $result['lang'] = json_encode($result['lang']);
-                $this->getResponse()->setBody(json_encode($result,JSON_UNESCAPED_UNICODE));
+                $this->getResponse()->setBody(juu($result));
             }else{
                 $this->getView()->assign($result);
             }
@@ -41,9 +41,9 @@ class CashcardController extends  CommonController{
         $localCfg = new Ini(CFG."/config.common.ini");
         date_default_timezone_set(empty($localCfg->timezone)?Registry::get("config")->timezone:$localCfg->timezone);
         if (CT == 'th') {
-            $price  = $this->getRequest()->getQuery("price") /100;
+            $price  = (empty($this->getRequest()->getQuery("price"))?0:$this->getRequest()->getQuery("price")) /100;
         }else{
-            $price = trim($this->getRequest()->getQuery("price"));
+            $price = trim($this->getRequest()->getQuery("price",0));
         }
         $status = trim($this->getRequest()->getQuery("status"));
         if ($status == 200) {

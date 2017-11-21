@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>BluePay</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="wrap">
+    <div id="main-content">
+        <div id="_logo">
+            <div class="container">
+                {% if prePage is not empty %}
+                    <div style="color:#48A7FF;height: 20px;width: 150px;position: absolute;z-index: 2;top: 15px;">
+                        <a href="{{ prePage }}"><img src="/img/Back.png" style="padding:0px 10px;margin:0px;width: 39px;height: 24px;float: left;"><!--pilih tarif yang lain--></a>
+                    </div>
+                {% endif %}
+                <div class="col-md-12">
+                    <img src="/img/bluePay_logo.png" class="center-block img-responsive">
+                </div>
+            </div>
+        </div>
+        <div id="_sub-content" style="box-shadow: 0px 0px 0px #FFFFFF; border-bottom: 2px dashed #D1EDFF; padding-bottom:10px;">
+            <div class="container">
+                <div class="contentatmTop">
+                </div>
+                <div class="col-md-12">
+                    <form id="offlineFormID" method="get" action="">
+                        <div class="input-lg myclass">Harga Barang <span>Rp.{{ price|number_format }}</span></div>
+                        <div class="input-lg myclass">Blaya Transaksi <span id="myspanriceID">Rp.{{ fee }}</span></div>
+                        <div class="input-lg myclass">Jumlah Tagihan <span id="myspantotallID">Rp.{{ price }}</span></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="_sub-content" style="box-shadow: 0px 0px 0px #FFFFFF; padding: 0px;">
+            <div class="container">
+                <div class="col-md-12">
+                    <form id="offlineFormID" method="get" action="" style="margin-top:-10px;padding-bottom:15px;">
+                        <div class="input-lg myclass" >Kode Transaksi:<hr  style="margin-top:5px;margin-bottom:5px;"/>
+                            <span style="width:100%; text-align:right; font-family: 'HelveticaNeue-Medium';font-size: 16px;color: deepskyblue;letter-spacing: -1px;line-height: 23px;">
+                                {{ paymentcode }}
+                            </span>
+                        </div>
+
+                        <div class="input-lg myclass" id="payment_tip" style="font-size: 12px;letter-spacing: -1px;">
+                            Catatan : kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            {% if redirect_url is not empty %}
+                <a href="{{ redirect_url|trim }}"><div class="confirmClass">OK</div></a>
+            {% endif %}
+        </div>
+
+        <div>
+            <div id="_trade_guide" class="container" style="margin:0px 10px;">
+                <div id="_trade_guide_atm_permata"  class="contentfooot" ><br>
+                    <!-- permata -->
+                    <b id="permata_1_1" style=" cursor: pointer; letter-spacing: -0.5px;">Pembayaran melalui ATM Bank Lainnya: <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="permata_1_2" style="display:none">
+                        <p>1. Pilih “Transfer” pada menu</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “013” dan pilih “Benar” </p>
+                        <p>4. Masukan “Kode Pembayan” pada tujuan transfer </p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “Benar”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p>
+                    </div>
+                    <br><br>
+
+                    <b id="permata_2_1" style=" cursor: pointer; letter-spacing: -0.5px;">Pembayaran Melalui Mobile Banking/Internet Banking Bank Lainnya: <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="permata_2_2" style="display:none">
+                        <p>1. Pilih “Transfer” pada men</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “Bank Permata” </p>
+                        <p>4. Masukan “Kode Pembayan” pada tujuan transfer </p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “OK”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p>
+                    </div>
+                </div>
+                <!-- mandiri -->
+                <div id="_trade_guide_atm_mandiri" style="" class="contentfooot" style="margin-left:5%;margin-right:5%;"><br>
+                    <b id="mandiri_b" style=" cursor: pointer; letter-spacing: -0.5px;">Langkah pembayaran melalui ATM: <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="mandiri_c" style="display:none">
+                        <p>1. - Pilih menu bayar/beli</p>
+                        <p>2. Pilih lainnya -> lainnya -> multi payment</p>
+                        <p>3. Isi kode perusahaan 70002 dan pilih benar</p>
+                        <p>4. Isi kode 078 dan pilih benar</p>
+                        <p>5. Masukkan kode pembayaran dengan 8 digit kode sisanya dan pilih “Benar”</p>
+                        <p>6. Ikuti langkah selanjutnya hingga pembayaran selesai.</p>
+                        <!-- <p>1. Pilih “Transfer” pada menu</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “013” dan pilih “Benar” </p>
+                        <p>4. Masukan “Kode Pembayan” pada tujuan transfer </p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “Benar”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p> -->
+
+                    </div><br><br>
+
+                    <b id="mandiri_d" style=" cursor: pointer; letter-spacing: -0.5px;">Langkah pembayaran melalui Mobile Bank: <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="mandiri_e" style="display:none">
+                        <p>1. Pilih menu bayar / beli</p>
+                        <p>2. Pilih Lainnya > Penyedia Layanan > Pilih DOKU</p>
+                        <p>3. Isi kode merchant “078” </p>
+                        <p>4. - Masukkan kode pembayaran dengan 8 digit kode sisanya dan pilih "lanjut" </p>
+                        <p>5. Ikuti langkah selanjutnya hingga pembayaran selesai.</p>
+                        <!-- <p>1. Pilih “Transfer” pada men</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “Bank Permata” </p>
+                        <p>4. Masukan “Kode Pembayan” pada tujuan transfer </p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “OK”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p> -->
+
+                    </div>
+                    <br><br>
+
+                    <b id="mandiri_f" style=" cursor: pointer; letter-spacing: -0.5px;">Langkah pembayaran melalui Internet Bank: <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="mandiri_g" style="display:none">
+                        <p>1. Pilih menu bayar / beli</p>
+                        <p>2. Pilih Lainnya > Penyedia Layanan > Pilih DOKU</p>
+                        <p>3. Isi kode merchant “078” </p>
+                        <p>4. Masukkan kode pembayaran dengan 8 digit kode sisanya dan pilih "lanjut" </p>
+                        <p>5. Ikuti langkah selanjutnya hingga pembayaran selesai.</p>
+                        <!-- <p>1. Pilih “Transfer” pada men</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “Bank Permata” </p>
+                        <p>4. Masukan “Kode Pembayan” pada tujuan transfer </p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “OK”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p> -->
+
+                    </div>
+                </div>
+                <!-- 直连permata -->
+                <div id="_trade_guide_atm_permata_direct"  class="contentfooot" ><br>
+
+                    <b id="permata_direct_1_1" style=" cursor: pointer; letter-spacing: -0.5px;">Permata ATM Permata<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="permata_direct_1_2" style="display:none">
+                        <p>1. Masukkan Kartu ATM Permata dan PIN</p>
+                        <p>2. Pilih Transfer > Rekening Permata</p>
+                        <p>3. Masukkan nomor Virtual Account XXXX</p>
+                        <p>4. Masukkan nominal</p>
+                        <p>5. Ikuti Instruksi untuk menyelesaikan transaksi</p>
+                    </div>
+                    <br><br>
+
+                    <b id="permata_direct_2_1" style=" cursor: pointer; letter-spacing: -0.5px;">Permata Mobile Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="permata_direct_2_2" style="display:none">
+                        <p>1. Buka Aplikasi Mobile Banking Permata di HP</p>
+                        <p>2. Masukkan User Name dan Password</p>
+                        <p>3. Pilih Pembayaran > Virtual Account > Pilih Rekening untuk Pembayaran > Pilih Tagihan Baru > Masukkan Nomor Virtual Account XXXX</p>
+                        <p>4. Masukkan Nominal</p>
+                        <p>5. Ikuti Insruksi untuk menyelesaikan transaksi</p>
+                    </div>
+                    <br><br>
+
+                    <b id="permata_direct_3_1" style=" cursor: pointer; letter-spacing: -0.5px;">Permata Internet Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="permata_direct_3_2" style="display:none">
+                        <p>1. Kunjungi Internet Banking Permata</p>
+                        <p>2. Masukkan User Name dan Password</p>
+                        <p>3. Pilih Pembayaran > Tagihan Pembayaran > Virtual Account</p>
+                        <p>4. Pilih Rekening untuk Pembayaran > Masukkan Nomor Virtual Account XXXX</p>
+                        <p>5. Masukkan nominal</p>
+                        <p>6. Ikuti instruksi untuk menyelesaikan transaksi</p>
+                    </div>
+                </div>
+                <!-- 直连 mandiri -->
+                <div id="_trade_guide_atm_mandiri_direct" style="" class="contentfooot" style="margin-left:5%;margin-right:5%;"><br>
+                    <b id="mandiri_direct_b" style=" cursor: pointer; letter-spacing: -0.5px;">Mandiri ATM Mandiri<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="mandiri_direct_c" style="display:none">
+                        <p>1. Masukkan Kartu ATM Mandiri > Pilih Bahasa > Masukkan PIN ATM</p>
+                        <p>2. Pilih Transaksi Lain > Transfer > Antar Bank Online > Masukkan “009” dan “Nomor Virtual Account XXXX” > Masukkan nominal untuk bayar</p>
+                        <p>3. Pastikan informasi yang ada di layar sudah benar/p>
+                        <p>4. Pilih iya</p>
+
+                    </div><br><br>
+
+                    <b id="mandiri_direct_d" style=" cursor: pointer; letter-spacing: -0.5px;">Mandiri Mobile Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="mandiri_direct_e" style="display:none">
+                        <p>1. Buka Aplikasi Mandiri Online lewat HP</p>
+                        <p>2. Masukkan User Name dan Password</p>
+                        <p>3. Pilih Transfer > Bank Lain > Masukkan Nomor Virtual Account XXXX > Masukkan Nominal > Konfirmasi dengan PIN Mobile Mandiri</p>
+
+                    </div>
+                    <br><br>
+
+                    <b id="mandiri_direct_f" style=" cursor: pointer; letter-spacing: -0.5px;">Mandiri Internet Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="mandiri_direct_g" style="display:none">
+                        <p>1. Kunjungi Mandiri Online</p>
+                        <p>2. Masukkan User Name dan Password</p>
+                        <p>3. Pilih Transfer > Bank Lain > Pilih Rekening > Pilih Bank BNI sebagai tujuan > Masukkan Virtual Account XXXX > Masukkan Nominal</p>
+                        <p>4. Pastikan Informasi yang tertera di layar sudah benar</p>
+                        <p>5. Gunakan Apply 1 dari Token Mandiri dan masukkan nomor HP untuk mendapat kode respon</p>
+                        <p>6. Masukkan Kode Respon dan konfirmasi</p>
+
+                    </div>
+                </div>
+                <!-- 直连 bni -->
+                <div id="_trade_guide_atm_bni" style="" class="contentfooot" style="margin-left:5%;margin-right:5%;"><br>
+                    <b id="bni_1_1" style=" cursor: pointer; letter-spacing: -0.5px;">ATM BNI<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bni_1_2" style="display:none">
+                        <p>1. Masukkan kartu, pilih bahasa kemudian masukkan PIN Anda</p>
+                        <p>2. Pilih "Menu Lainnya" lalu pilih "Transfer"</p>
+                        <p>3. Pilih "Tabungan" lalu "Rekening BNI Virtual Account"</p>
+                        <p>4. Masukkan nomor Virtual Account XXXX dan nominal yang ingin Anda bayar</p>
+                        <p>5. Periksa kembali data transaksi kemudian tekan "Ya"</p>
+
+                    </div><br><br>
+
+                    <b id="bni_2_1" style=" cursor: pointer; letter-spacing: -0.5px;">BNI INTERNET BANKING<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bni_2_2" style="display:none">
+                        <p>1. Login di https://ibank.bni.co.id, masukkan User ID dan Password</p>
+                        <p>2. Pilih “TRANSFER” lalu pilih “Tambah Rekening Favorit”</p>
+                        <p>3. Jika Anda menggunakan desktop untuk menambah rekening, pilih “Transaksi” lalu pilih “Atur Rekening Tujuan” kemudian “Tambah Rekening Tujuan”</p>
+                        <p>4. Masukkan Nama dan nomor Virtual Account XXXX Anda, lalu masukkan Kode Otentikasi Token</p>
+                        <p>5. Jika Nomor rekening tujuan berhasil ditambahkan, kembali ke menu “TRANSFER”</p>
+                        <p>6. Pilih “TRANSFER ANTAR REKENING BNI”, kemudian pilih rekening tujuan</p>
+                        <p>7. Pilih Rekening Debit dan ketik nominal, lalu masukkan kode otentikasi token</p>
+
+                    </div>
+                    <br><br>
+
+                    <b id="bni_3_1" style=" cursor: pointer; letter-spacing: -0.5px;">Mobile Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bni_3_2" style="display:none">
+                        <p>1. Login ke BNI Mobile Banking, masukkan User ID dan MPIN</p>
+                        <p>2. Pilih menu "Transfer", lalu pilih "Antar Rekening BNI"</p>
+                        <p>3. Pilih "Input Rekening Baru"</p>
+                        <p>4. Masukkan "Rekening Debet", "Rekening Tujuan" XXXX dan "Nominal" kemudian klik "Lanjut"</p>
+                        <p>5. Periksa kembali data transaksi Anda, masukkan "Password Transaksi" kemudian klik "Lanjut"</p>
+
+                    </div>
+                </div>
+                <!-- 直连 bri -->
+                <div id="_trade_guide_atm_bri" style="" class="contentfooot" style="margin-left:5%;margin-right:5%;"><br>
+                    <b id="bri_1_1" style=" cursor: pointer; letter-spacing: -0.5px;">BRI ATM BRI<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bri_1_2" style="display:none">
+                        <p>1. Masukkan Kartu ATM > Pilih Bahasa > Masukkan PIN ATM</p>
+                        <p>2. Pilih Transaksi Lain > Transfer > Bank Lain > Masukkan “009” sebagai kode bank dan masukkan nomor Virtual Account XXXX > Masukkan nominal</p>
+                        <p>3. Pastikan informasi yang tertera di layar sudah benar</p>
+                        <p>4. Pilih iya</p>
+
+                    </div><br><br>
+
+                    <b id="bri_2_1" style=" cursor: pointer; letter-spacing: -0.5px;">BRI Internet Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bri_2_2" style="display:none">
+                        <p>1. Kunjungi Internet Banking BRI</p>
+                        <p>2. Masukkan User Name dan Password</p>
+                        <p>3. Pilih Transfer > Antar Bank > Pilih Rekening > Pilih Bank BNI sebagai tujuan > Masukkan nomor Virtual Account XXXX > Masukkan Nominal</p>
+                        <p>4. Masukkan Password BRI Internet Banking > Masukkan mToken > Pilih iya</p>
+
+                    </div>
+                    <br><br>
+
+                    <b id="bri_3_1" style=" cursor: pointer; letter-spacing: -0.5px;">BRI Mobile Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bri_3_2" style="display:none">
+                        <p>1. Buka Aplikasi Mobile Banking BRI di HP</p>
+                        <p>2. Pilih Transfer > Bank Lain > Pilih Bank BNI > Masukan nomor Virtual Account XXXX > Masukkan Nominal > Konfirmasi dengan PIN</p>
+                        <p>3. Ikuti Instruksi yang diberikan melalui SMS</p>
+
+                    </div>
+                </div>
+                <!-- 直连bca -->
+                <div id="_trade_guide_atm_bca" style="" class="contentfooot" style="margin-left:5%;margin-right:5%;"><br>
+                    <b id="bca_1_1" style=" cursor: pointer; letter-spacing: -0.5px;">BCA ATM BCA<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bca_1_2" style="display:none">
+                        <p>1. Masukkan Kartu ATM BCA dan PIN</p>
+                        <p>2. Pilih Transfer > Bank Lain > Masukkan “013” sebagai kode bank > Masukkan Nominal > Masukkan nomor Virtual Account XXXX</p>
+                        <p>3. Pastikan informasi yang tampil di layar sudah benar</p>
+                        <p>4. Pilih Lanjutkan untuk menyelesaikan transaksi</p>
+                    </div><br><br>
+
+                    <b id="bca_2_1" style=" cursor: pointer; letter-spacing: -0.5px;">BCA Mobile Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bca_2_2" style="display:none">
+                        <p>1. Buka Aplikasi Mobile Banking BCA lewat HP</p>
+                        <p>2. Masukkan User Name dan Password</p>
+                        <p>3. Pilih Transfer > Tambah Rekening Bank > Antar Bank > Masukkan Nomor Virtual Account XXXX dan pilih Bank Permata > Konfirmasi dengan PIN Mobile BCA</p>
+                        <p>4. Kembali ke halaman sebelumnya dan pilih transfer antar Bank > Pilih nomor Virtual Account yang telah ditambahkan sebelumnya > Masukkan Nominal > Konfirmasi dengan PIN Mobile BCA</p>
+
+                    </div>
+                    <br><br>
+
+                    <b id="bca_3_1" style=" cursor: pointer; letter-spacing: -0.5px;">BCA Internet Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="bca_3_2" style="display:none">
+                        <p>1. Kunjungi KlikBCA</p>
+                        <p>2. Masukkan User Name dan Password</p>
+                        <p>3. Pilih Transfer Dana > Tambah Rekening Tujuan > Rekening Bank Lain > Pilih Bank Tujuan : Permata > Ikuti Instruksi dan masukkan Nomor Virtual Account XXXX</p>
+                        <p>4. Setelah menambahkan Virtual Account, pilih Transfer ke Bank Lain > Pilih Virtual Account > Masukkan Nominal > Masukan Kode Respon dari Token BCA</p>
+                        <p>5. Pilih Apply 1 dari Token BCA dan masukkan angka 8 digit dari Token ke KlikBCA</p>
+
+                    </div>
+                </div>
+                <!-- 直连other -->
+                <div id="_trade_guide_atm_other" style="" class="contentfooot" style="margin-left:5%;margin-right:5%;"><br>
+                    <b id="other_1_1" style=" cursor: pointer; letter-spacing: -0.5px;">Other Bank ATM<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="other_1_2" style="display:none">
+                        <p>1. Pilih “Transfer” pada menu</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “013” dan pilih “Benar”</p>
+                        <p>4. Masukan “Kode Pembayan” XXXX pada tujuan transfer</p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “Benar”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p>
+
+                    </div><br><br>
+
+                    <b id="other_2_1" style=" cursor: pointer; letter-spacing: -0.5px;">Other Bank Mobile Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="other_2_2" style="display:none">
+                        <p>1. Pilih “Transfer” pada menu</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “Bank Permata(013)”</p>
+                        <p>4. Masukan “Kode Pembayan” XXXX pada tujuan transfer</p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “OK”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p>
+
+                    </div>
+                    <br><br>
+
+                    <b id="other_3_1" style=" cursor: pointer; letter-spacing: -0.5px;">Other Bank Internet Banking<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></b>
+                    <div id="other_3_2" style="display:none">
+                        <p>1. Pilih “Transfer” pada menu</p>
+                        <p>2. Pilih “Ke Bank Lain” pada menu</p>
+                        <p>3. Masukan kode bank “Bank Permata(013)”</p>
+                        <p>4. Masukan “Kode Pembayan” XXXX pada tujuan transfer</p>
+                        <p>5. Masukan nominal yang harus dibayarkan dan pilih “OK”</p>
+                        <p>6. Ikuti langkah selanjutnya sampai transaksi berhasil</p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="footer">
+    <div class="sub-footer">
+        <div class="container">
+            <div class="row">
+                <!-- <div class="col-md-12"> -->
+                <p class="text-center">&copy; <a href="#" title="BlueMobile">Blue Mobile Tech</a> Co.,Ltd. All rights reserved.</p>
+                <!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bluepay.js"></script>
+<script type="text/javascript">
+    var productId = "{{ productId }}";
+    if (!showLogo(productId)) {
+        $("#_logo").css("display","none");
+    };
+    $(function(){
+        var bankType = "{{ bankType }}" ;
+        var isDirect = "{{ isDirect }}" ;
+        if (isDirect==0&&bankType == "permata") {
+            $("#_trade_guide_atm_permata").show();
+            $("#_trade_guide_atm_mandiri").hide();
+            $("#_trade_guide_atm_permata_direct").hide();
+            $("#_trade_guide_atm_mandiri_direct").hide();
+            $("#_trade_guide_atm_bni").hide();
+            $("#_trade_guide_atm_bri").hide();
+            $("#_trade_guide_atm_bca").hide();
+            $("#_trade_guide_atm_other").hide();
+            $("#payment_tip").empty().append('Catatan:Kode Transaksi ini dapat dibayarkan melalui ATM, Mobile Bank, dan Internet Bank permata dan bank lainnya.Bagi pemilik kartu bank selain permata akan dikenakan biaya transaksi antar bank sebesar Rp. 6500.Kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru');
+        }else if (isDirect==1&&bankType == "permata") {
+            $("#_trade_guide_atm_permata").hide();
+            $("#_trade_guide_atm_mandiri").hide();
+            $("#_trade_guide_atm_permata_direct").show();
+            $("#_trade_guide_atm_mandiri_direct").hide();
+            $("#_trade_guide_atm_bni").hide();
+            $("#_trade_guide_atm_bri").hide();
+            $("#_trade_guide_atm_bca").hide();
+            $("#_trade_guide_atm_other").hide();
+            $("#payment_tip").empty().append('Catatan:Kode Transaksi ini dapat dibayarkan melalui ATM, Mobile Bank, dan Internet Bank permata dan bank lainnya.Bagi pemilik kartu bank selain permata akan dikenakan biaya transaksi antar bank sebesar Rp. 6500.Kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru');
+            // }
+        }else if (bankType == "mandiri") {
+            $("#_trade_guide_atm_permata").hide();
+            $("#_trade_guide_atm_mandiri").show();
+            $("#_trade_guide_atm_permata_direct").hide();
+            $("#_trade_guide_atm_mandiri_direct").hide();
+            $("#_trade_guide_atm_bni").hide();
+            $("#_trade_guide_atm_bri").hide();
+            $("#_trade_guide_atm_bca").hide();
+            $("#_trade_guide_atm_other").hide();
+            $("#payment_tip").empty().append('Catatan : transaksi ini hanya dapat dilakukan melalui ATM Mandiri, mandiri mobile dan mandiri internet banking, untuk panduannya bisa di lihat di banner dalam aplikasi nonolive. Support semua ATM bank.kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru');
+        }
+
+        else if (bankType == "bni") {
+            $("#_trade_guide_atm_permata").hide();
+            $("#_trade_guide_atm_mandiri").hide();
+            $("#_trade_guide_atm_permata_direct").hide();
+            $("#_trade_guide_atm_mandiri_direct").hide();
+            $("#_trade_guide_atm_bni").show();
+            $("#_trade_guide_atm_bri").hide();
+            $("#_trade_guide_atm_bca").hide();
+            $("#_trade_guide_atm_other").hide();
+            $("#payment_tip").empty().append('Catatan:Kode Transaksi ini dapat dibayarkan melalui ATM, Mobile Bank, dan Internet Bank permata dan bank lainnya.Bagi pemilik kartu bank selain permata akan dikenakan biaya transaksi antar bank sebesar Rp. 6500.Kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru');
+        }else if (bankType == "bri") {
+            $("#_trade_guide_atm_permata").hide();
+            $("#_trade_guide_atm_mandiri").hide();
+            $("#_trade_guide_atm_permata_direct").hide();
+            $("#_trade_guide_atm_mandiri_direct").hide();
+            $("#_trade_guide_atm_bni").hide();
+            $("#_trade_guide_atm_bri").show();
+            $("#_trade_guide_atm_bca").hide();
+            $("#_trade_guide_atm_other").hide();
+            $("#payment_tip").empty().append('Catatan:Kode Transaksi ini dapat dibayarkan melalui ATM, Mobile Bank, dan Internet Bank permata dan bank lainnya.Bagi pemilik kartu bank selain permata akan dikenakan biaya transaksi antar bank sebesar Rp. 6500.Kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru');
+            // }
+        }else if (bankType == "bca") {
+            $("#_trade_guide_atm_permata").hide();
+            $("#_trade_guide_atm_mandiri").hide();
+            $("#_trade_guide_atm_permata_direct").hide();
+            $("#_trade_guide_atm_mandiri_direct").hide();
+            $("#_trade_guide_atm_bni").hide();
+            $("#_trade_guide_atm_bri").hide();
+            $("#_trade_guide_atm_bca").show();
+            $("#_trade_guide_atm_other").hide();
+            $("#payment_tip").empty().append('Catatan:Kode Transaksi ini dapat dibayarkan melalui ATM, Mobile Bank, dan Internet Bank permata dan bank lainnya.Bagi pemilik kartu bank selain permata akan dikenakan biaya transaksi antar bank sebesar Rp. 6500.Kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru');
+        }else{//other
+            $("#_trade_guide_atm_permata").hide();
+            $("#_trade_guide_atm_mandiri").hide();
+            $("#_trade_guide_atm_permata_direct").hide();
+            $("#_trade_guide_atm_mandiri_direct").hide();
+            $("#_trade_guide_atm_bni").hide();
+            $("#_trade_guide_atm_bri").hide();
+            $("#_trade_guide_atm_bca").hide();
+            $("#_trade_guide_atm_other").show();
+            $("#payment_tip").empty().append('Catatan:Kode Transaksi ini dapat dibayarkan melalui ATM, Mobile Bank, dan Internet Bank permata dan bank lainnya.Bagi pemilik kartu bank selain permata akan dikenakan biaya transaksi antar bank sebesar Rp. 6500.Kode transaksi ini berlaku selama 6 jam, lebih dari 6 jam silahkan membuat kode transaksi baru');
+        }
+
+        // permata
+        $('#permata_1_1').click(function(){
+            func();
+            // $('#first_c').slideUp("slow");
+            // $('#second_c').slideUp("slow");
+            // $('#third_c').slideUp("slow");
+            $('#permata_2_2').slideUp("slow");
+            $('#permata_3_2').slideUp("slow");
+            $('#permata_1_2').slideDown("slow");
+            $('#permata_1_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#permata_2_1').click(function(){
+            func();
+            // $('#first_c').slideUp("slow");
+            // $('#second_c').slideUp("slow");
+            // $('#third_c').slideUp("slow");
+            $('#permata_1_2').slideUp("slow");
+            $('#permata_3_2').slideUp("slow");
+            $('#permata_2_2').slideDown("slow");
+            $('#permata_2_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#permata_3_1').click(function(){
+            func();
+            // $('#first_c').slideUp("slow");
+            // $('#second_c').slideUp("slow");
+            // $('#third_c').slideUp("slow");
+            $('#permata_1_2').slideUp("slow");
+            $('#permata_2_2').slideUp("slow");
+            $('#permata_3_2').slideDown("slow");
+            $('#permata_3_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+
+        // 直连permata
+        $('#permata_direct_1_1').click(function(){
+            func();
+            $('#permata_direct_2_2').slideUp("slow");
+            $('#permata_direct_3_2').slideUp("slow");
+            $('#permata_direct_1_2').slideDown("slow");
+            $('#permata_direct_1_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#permata_direct_2_1').click(function(){
+            func();
+            $('#permata_direct_1_2').slideUp("slow");
+            $('#permata_direct_3_2').slideUp("slow");
+            $('#permata_direct_2_2').slideDown("slow");
+            $('#permata_direct_2_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#permata_direct_3_1').click(function(){
+            func();
+            $('#permata_direct_1_2').slideUp("slow");
+            $('#permata_direct_2_2').slideUp("slow");
+            $('#permata_direct_3_2').slideDown("slow");
+            $('#permata_direct_3_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+
+        //mandiri
+        $('#mandiri_b').click(function(){
+            func();
+            $('#mandiri_e').slideUp("slow");
+            $('#second_g').slideUp("slow");
+            $('#mandiri_c').slideDown("slow");
+            $('#mandiri_b').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#mandiri_d').click(function(){
+            func();
+            $('#mandiri_c').slideUp("slow");
+            $('#second_g').slideUp("slow");
+            $('#mandiri_e').slideDown("slow");
+            $('#mandiri_d').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#mandiri_f').click(function(){
+            func();
+            $('#mandiri_c').slideUp("slow");
+            $('#second_e').slideUp("slow");
+            $('#mandiri_g').slideDown("slow");
+            $('#mandiri_d').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+
+        // 直连mandiri
+        $('#mandiri_direct_b').click(function(){
+            func();
+            $('#mandiri_direct_e').slideUp("slow");
+            $('#second_direct_g').slideUp("slow");
+            $('#mandiri_direct_c').slideDown("slow");
+            $('#mandiri_direct_b').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#mandiri_direct_d').click(function(){
+            func();
+            $('#mandiri_direct_c').slideUp("slow");
+            $('#second_direct_g').slideUp("slow");
+            $('#mandiri_direct_e').slideDown("slow");
+            $('#mandiri_direct_d').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#mandiri_direct_f').click(function(){
+            func();
+            $('#mandiri_direct_c').slideUp("slow");
+            $('#second_direct_e').slideUp("slow");
+            $('#mandiri_direct_g').slideDown("slow");
+            $('#mandiri_direct_d').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        // bni
+        $('#bni_1_1').click(function(){
+            func();
+            $('#bni_2_2').slideUp("slow");
+            $('#bni_3_2').slideUp("slow");
+            $('#bni_1_2').slideDown("slow");
+            $('#bni_1_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#bni_2_1').click(function(){
+            func();
+            $('#bni_1_2').slideUp("slow");
+            $('#bni_3_2').slideUp("slow");
+            $('#bni_2_2').slideDown("slow");
+            $('#bni_2_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#bni_3_1').click(function(){
+            func();
+            $('#bni_1_2').slideUp("slow");
+            $('#bni_2_2').slideUp("slow");
+            $('#bni_3_2').slideDown("slow");
+            $('#bni_3_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        // bri
+        $('#bri_1_1').click(function(){
+            func();
+            $('#bri_2_2').slideUp("slow");
+            $('#bri_3_2').slideUp("slow");
+            $('#bri_1_2').slideDown("slow");
+            $('#bri_1_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#bri_2_1').click(function(){
+            func();
+            $('#bri_1_2').slideUp("slow");
+            $('#bri_3_2').slideUp("slow");
+            $('#bri_2_2').slideDown("slow");
+            $('#bri_2_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#bri_3_1').click(function(){
+            func();
+            $('#bri_1_2').slideUp("slow");
+            $('#bri_2_2').slideUp("slow");
+            $('#bri_3_2').slideDown("slow");
+            $('#bri_3_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        //bca
+        $('#bca_1_1').click(function(){
+            func();
+            $('#bca_2_2').slideUp("slow");
+            $('#bca_3_2').slideUp("slow");
+            $('#bca_1_2').slideDown("slow");
+            $('#bca_1_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#bca_2_1').click(function(){
+            func();
+            $('#bca_1_2').slideUp("slow");
+            $('#bca_3_2').slideUp("slow");
+            $('#bca_2_2').slideDown("slow");
+            $('#bca_2_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#bca_3_1').click(function(){
+            func();
+            $('#bca_1_2').slideUp("slow");
+            $('#bca_2_2').slideUp("slow");
+            $('#bca_3_2').slideDown("slow");
+            $('#bca_3_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        //other
+        $('#other_1_1').click(function(){
+            func();
+            $('#other_2_2').slideUp("slow");
+            $('#other_3_2').slideUp("slow");
+            $('#other_1_2').slideDown("slow");
+            $('#other_1_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#other_2_1').click(function(){
+            func();
+            $('#other_1_2').slideUp("slow");
+            $('#other_3_2').slideUp("slow");
+            $('#other_2_2').slideDown("slow");
+            $('#other_2_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+        $('#other_3_1').click(function(){
+            func();
+            $('#other_1_2').slideUp("slow");
+            $('#other_2_2').slideUp("slow");
+            $('#other_3_2').slideDown("slow");
+            $('#other_3_1').find('span').attr('class','glyphicon glyphicon-chevron-down');
+        });
+
+        var func = function(){
+            $('#_trade_guide').find('b span').attr('class','glyphicon glyphicon-chevron-right');
+        }
+
+
+
+
+    });
+</script>
+</body>
+</html>

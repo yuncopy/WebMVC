@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>BluePay</title>
+    {% block stylesheet %}
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/bank/test/style.css">
+    {% endblock %}
+</head>
+<body>
+<div id="wrap">
+    <div id="main-content">
+        <div id="_logo">
+            <div class="container">
+                {% if prePage is not empty %}
+                    <div style="color:#48A7FF;height: 20px;width: 150px;position: absolute;z-index: 2;top: 15px;">
+                        <a href="{{ prePage }}"><img src="/img/Back.png" style="padding:0px 10px;margin:0px;width: 39px;height: 24px;float: left;"><!--pilih tarif yang lain--></a>
+                    </div>
+                {% endif %}
+                <div class="col-md-12">
+                    <img src="/img/bluePay_logo.png" class="center-block img-responsive">
+                </div>
+            </div>
+        </div>
+        <div id="_sub-content">
+            <div class="container">
+                <div class="contentOfflineForm1">
+                    <div class="contentOfflineTop" >
+                        <ul>
+                            <li><a href="javascript:void(0);" num = 1 id="tab_atm" onclick="selectPayType('atm')">ATM</a></li>
+                            <li><a href="javascript:void(0);" num = 2 id = "tab_otc" onclick="selectPayType('otc')">Bayar di Mini Market</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="offlineFormID" action="#">
+                            <div class="input-lg myclass"><input type="text" id="input_paymentCode" value="{{ paymentCode }}" class="form-control" placeholder="Enter the payment code"></div>
+                            <div class="input-lg myclass"><input type="text" id="input_price" value="{{ price }}" class="form-control" placeholder="Charge price"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contentOfflineForm2">
+                    <div class="col-md-12">
+                        <h4 style="margin-left:20px;">Bank Card No.</h4>
+                        <div class="input-lg myclass"><input type="text" id="input_cardNo" class="form-control" placeholder="Please input the test Bank Card NO."></div>
+                        <center class = "container-otc" style="margin-top:100px;margin-bottom:30px;">
+                            <button type="submit" class="btn btn-block btn-lg btn-info " id="btn_confirm" onclick="doAction(this)">Submit</button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'footer.twig' %}
+{% block component  %}
+    {% include 'alert.twig' %}
+    {% include 'loading.twig' %}
+{% endblock %}
+<input type="hidden" id="input_provider" name="provider" value="atm">
+{% block javascript %}
+    <script src={{ "/js/jquery.min.js" }}></script>
+    <script src={{ "/js/bootstrap.min.js" }}></script>
+    <script src={{ "/js/common.js" }}></script>
+    <script>
+        //选择atm或者otc
+        function selectPayType(type){
+            switch (type) {
+                //atm
+                case 'atm':
+                    $("#offlineFormID #providerID").val('atm');
+                    $("#_sub-content .contentOfflineTop ul li:nth-child(1) a").css('color','black');
+                    $("#_sub-content .contentOfflineTop").css("backgroundImage","url(/img/offline/in/atm_bj_640.png)");
+                    document.getElementById('input_provider').value = "atm";
+                    break;
+
+                //otc
+                case 'otc':
+                    $("#offlineFormID #providerID").val('otc');
+                    $("#_sub-content .contentOfflineTop ul li:nth-child(2) a").css('color','black');
+                    $("#_sub-content .contentOfflineTop").css("backgroundImage","url(/img/offline/in/mini_bj_640.png)");
+                    document.getElementById('input_provider').value = "otc";
+                    break;
+            }
+        }
+
+        //提交
+        function doAction(obj){
+            var provider = '{{ payType }}';
+            var productId 	= {{ productId }} ;
+            var paymentCode    = $("#input_paymentCode").val();
+            var price     = {{ price }};
+            var cardNo     = $("#input_cardNo").val();
+
+            if (provider == null || provider == undefined || provider == ''){
+                provider = 'atm';
+            }
+            var url = "provider="  + provider
+                    + "&productId="     + productId
+                    + "&paymentCode="   + paymentCode
+                    + "&cardNo="        + cardNo
+                    + "&price="			+ price
+                    + "&transactionId="+{{ transactionId }};
+            showLoading();
+            $.ajax({
+                type: "GET",
+                url: "/c=offline&a=testOffline?"+url,
+                dataType: "json",
+                success: function(data){
+                    hideLoading();
+                    console.log(data);
+                    if (data.status == "200" ) {
+                        displayInfo("Pay success");
+                    }else{
+                        displayInfo("Pay fail "+data.description);
+                    }
+                },
+                error:function(){
+                    hideLoading();
+                    displayInfo('Request timeout, Please check your network.',false);
+                }
+            });
+            return true;
+        }
+    </script>
+{% endblock %}
+</body>
+</html>

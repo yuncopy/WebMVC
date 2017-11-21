@@ -22,39 +22,6 @@ class Logs{
     /**
      * @return Logger
      */
-    public static function mysql(){
-        $log = new Logger('MYSQL');
-        if($log->isHandling(400)){
-            return $log;
-        }
-        $log->pushHandler(new StreamHandler(LOG_PATH."/mysql/".date("Ymd").".log", Logger::ERROR));
-        return $log;
-    }
-    /**
-     * @return Logger
-     */
-    public static function redis(){
-        $log = new Logger('REDIS');
-        if($log->isHandling(400)){
-            return $log;
-        }
-        $log->pushHandler(new StreamHandler(LOG_PATH."/redis/".date("Ymd").".log", Logger::ERROR));
-        return $log;
-    }
-    /**
-     * @return Logger
-     */
-    public static function memcache(){
-        $log = new Logger('MEMCACHE');
-        if($log->isHandling(400)){
-            return $log;
-        }
-        $log->pushHandler(new StreamHandler(LOG_PATH."/memcache/".date("Ymd").".log", Logger::ERROR));
-        return $log;
-    }
-    /**
-     * @return Logger
-     */
     public static function debug($filename=null){
         $log = new Logger('DEBUG');
         if($log->isHandling(100)){

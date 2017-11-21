@@ -11,9 +11,8 @@ function displayInfo(info) {
     $('#modal-alert #alert_cont img').prop('src', '/img/alert_error.png');
     $('#modal-alert').modal();
 }
-var op,ct,lang,redirectUrl,cardNo,serialNo,productId,promotionId,provider,propsName,customerId,transactionId,status,description,isShowLogo;
+var ct,lang,redirectUrl,cardNo,serialNo,productId,promotionId,provider,propsName,customerId,transactionId,status,description,isShowLogo;
 function setConfig($config){
-    window.op = $config.op?$config.op:'';
     window.ct = $config.ct?$config.ct:'';
     window.lang = $config.lang?JSON.parse($config.lang):'';
     window.redirectUrl = $config.redirectUrl?$config.redirectUrl:'';
@@ -167,7 +166,26 @@ function replaceOperPic(picname) {
 function showLoading(){
     $('#modal-alert-loading').modal();
 }
-
+function hiddenInfo(redirectUrl=''){
+    $('#modal-alert').modal('hide');
+    if (redirectUrl != "") {
+        window.location.href = redirectUrl;
+    };
+}
 function hideLoading(){
     $('#modal-alert-loading').modal('hide');
+}
+function chooseMore() {
+    $("#contentthbID").show();
+    $(".contentpicthb").hide();
+    $(".contentbottomthb").hide();
+    $(".topclass").hide();
+    $(".bottomclass").show();
+}
+function closeCountryBut(){
+    $(".contentpicthb").show();
+    $(".contentbottomthb").show();
+    $(".topclass").show();
+    $("#contentthbID").hide();
+    $(".bottomclass").hide();
 }

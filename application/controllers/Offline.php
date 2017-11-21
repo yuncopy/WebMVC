@@ -20,7 +20,7 @@ class OfflineController extends Controller_Abstract{
         $result = $offlineService->index();
         if($offlineService->getUi() == $offlineService::NON_UI_PARAM){
             Dispatcher::getInstance()->disableView();
-            $this->getResponse()->setBody(json_encode($result,JSON_UNESCAPED_UNICODE));
+            $this->getResponse()->setBody(juu($result));
         }else{
             $this->getView()->assign($result);
         }
@@ -33,7 +33,7 @@ class OfflineController extends Controller_Abstract{
         $offlineService = new \service\OfflineService($this->getRequest());
         $result = $offlineService->offline();
         $respons = $this->getResponse();
-        $respons->setBody(json_encode($result,JSON_UNESCAPED_UNICODE));
+        $respons->setBody(juu($result));
         Dispatcher::getInstance()->disableView();
     }
 
@@ -48,6 +48,7 @@ class OfflineController extends Controller_Abstract{
             'productId'=>$this->getRequest()->getQuery("atmFee",0),
             'prePage'=>$this->getRequest()->getQuery("pre_page",''),
             'redirect_url'=>$this->getRequest()->getQuery("redirect_url",''),
+            'paymentcode'=>chunk_split($this->getRequest()->getQuery("paymentcode",''),4,'  '),
         ]);
     }
 
@@ -61,6 +62,26 @@ class OfflineController extends Controller_Abstract{
             'price'=>$this->getRequest()->getQuery("price",0)+$this->getRequest()->getQuery("otcFee",0),
             'prePage'=>$this->getRequest()->getQuery("pre_page",''),
             'redirect_url'=>$this->getRequest()->getQuery("redirect_url",''),
+            'paymentcode'=>chunk_split($this->getRequest()->getQuery("paymentcode",''),4,'  '),
         ]);
+    }
+
+    /**
+     * 测试
+     */
+    public function testAction(){
+        $offlineService = new \service\OfflineService($this->getRequest());
+        $result = $offlineService->test();
+        $this->getView()->assign($result);
+    }
+
+    /**
+     * 测试
+     */
+    public function testOfflineAction(){
+        $offlineService = new \service\OfflineService($this->getRequest());
+        $result = $offlineService->testOffline();
+        $this->getResponse()->setBody(juu($result));
+        Dispatcher::getInstance()->disableView();
     }
 }

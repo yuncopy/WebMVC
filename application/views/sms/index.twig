@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <meta HTTP-EQUIV="If-None-Match" >
+    <meta HTTP-EQUIV="expires" CONTENT="0">
+    <title>BluePay</title>
+    {% block stylesheet %}
+        <link rel="stylesheet" href={{ "/css/style.css" }}>
+        <link rel="stylesheet" href={{ "/css/sms/style.css" }}>
+    {% endblock %}
+</head>
+<body>
+<div id="wrap">
+    <div id="main-content">
+        <div id="_logo">
+            <div class="container">
+                <div class="col-md-12">
+                    <img src="/img/bluePay_logo.png" class="center-block img-responsive" width="20%">
+                </div>
+            </div>
+        </div>
+        <div id="_sub-content">
+            <div class="container">
+                <div class="contentTopweb">
+                    <ul>
+                        {% for k,tel in telcos %}
+                            <li style='width:{{ 1/(telcos|length)*100 }}%'><a href='javascript:void(0)' onclick="changeTelcos('{{ tel }}','{{ k }}')">{{ tel|capitalize }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-12 form-panel" >
+                    <form id="inFormID" method="get" action="#">
+                        <div class="contentpic">
+                            <img src="/img/sms/telco_ais.png" >
+                            <!--手机号码表单-->
+                            <input type="test" class="form-control input-msisdn" name="msisdn" id="msisdn" placeholder="Silahkan masukan nomor telepon anda">
+                            <div style="font-size:8px;word-wrap: break-word;overflow: hidden;" id="phone_prefix"></div>
+                        </div>
+                            <span id="spanId">
+                                <a  class="btn btn-block btn-lg btn-success submitClass" id= "btn_submit">
+                                {% if ct == 'th' %}
+                                    {{ (price/100)~currency }}
+                                {% else %}
+                                    {{ price~currency }}
+                                {% endif %}
+                                <span style="margin-left:20px;backgroud-color:white;">{{ lang.buy }}</span>
+                            </a>
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'footer.twig' %}
+{% block component  %}
+    {% include 'alert.twig' %}
+    {% include 'loading.twig' %}
+{% endblock %}
+{% block javascript %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src={{ "/js/jquery.min.js" }}></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src={{ "/js/bootstrap.min.js" }}></script>
+    <script src={{ "/js/sms/main.js?v=30002" }}></script>
+    <script src={{ "/js/common.js" }}></script>
+    <script type="text/javascript">
+        init({
+            os:'{{ os|raw }}',
+            productId:'{{ productId }}',
+            price:'{{ price }}',
+            telcos:'{{ telcos|json_encode|raw }}',
+            transactionId:'{{ transactionId }}',
+            promotionId:'{{ promotionId }}',
+            propsName:'{{propsName  }}',
+            ct:'{{ ct }}',
+            telco:'{{ telco }}',
+            isHwChannel:'{{ isHwChannel }}',
+            isShowLogo:'{{ isShowLogo }}',
+            status:'{{ status }}',
+            description:'{{ description }}',
+            lang:'{{ lang|json_encode|raw }}',
+            href:'{{ href }}',
+            bank:'{{ bank }}'
+        });
+    </script>
+{% endblock %}
+</body>
+</html>

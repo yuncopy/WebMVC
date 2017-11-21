@@ -20,6 +20,42 @@ class WalletService extends CommonService{
     protected $map = ['payType'=>'tradeType'];
     public $_res = [];
 
+    /**
+     * @return bool
+     * @throws \ParamsException
+     */
+    protected function validata(){
+        if (empty($this->getProductId())) {
+            throw new \ParamsException("ProductId is required",400);
+        }
+        if (empty($this->getTransactionId())) {
+            throw new \ParamsException("transactionId is required",400);
+        }
+        if (empty($this->getPrice())) {
+            throw new \ParamsException("price is required",400);
+        }
+        if (empty($this->getPropsName())) {
+            throw new \ParamsException("propsName is required",400);
+        }
+        if (empty($this->getTradeType())) {
+            throw new \ParamsException("tradeType is required",400);
+        }else{
+            if (!in_array($this->getProductId(), $this->_forApp) && strcasecmp($this->getTradeType(),'native')) {
+                throw new \ParamsException("payType must be native or NATIVE",400);
+            }
+            if (in_array($this->getProductId(), $this->_forApp) && (strcasecmp($this->getTradeType(),'natice')==0 && strcasecmp($this->getTradeType(),'app') == 0) ) {
+                throw new \ParamsException("payType must be native or app",400);
+            }
+        }
+        if (CT != "th") {
+            throw new \ParamsException("Does not support your Area.",500);
+        }
+        return true;
+    }
+
+    /**
+     *
+     */
     public function run(){
         $result = new class{
             public $status;
@@ -27,64 +63,13 @@ class WalletService extends CommonService{
             public $schema="";//pay.bluepay”/*app支付**/
             public $qrUrl="";//bluepay/d472a005d7cc48 /*扫码支付**/
         };
-        if (empty($this->getProductId())) {
-            $result->status = 400;
-            $result->description = "ProductId is required";
-            $this->_res = $result;
-            return;
-        }
-        if (empty($this->getTransactionId())) {
-            $result->status = 400;
-            $result->description = "transactionId is required";
-            $this->_res = $result;
-            return;
-        }
-        if (empty($this->getPrice())) {
-            $result->status = 400;
-            $result->description = "price is required";
-            $this->_res = $result;
-            return;
-        }
-        if (empty($this->getPropsName())) {
-            $result->status = 400;
-            $result->description = "propsName is required";
-            $this->_res = $result;
-            return;
-        }
-        if (empty($this->getTradeType())) {
-            $result->status = 400;
-            $result->description = "tradeType is required";
-            $this->_res = $result;
-            return;
-        }else{
-            if (!in_array($this->getProductId(), $this->_forApp) && strcasecmp($this->getTradeType(),'native')) {
-                $result -> status = 400;
-                $result -> description = "payType must be native or NATIVE";
-                $this->_res = $result;
-                return;
-            }
-            if (in_array($this->getProductId(), $this->_forApp) && (strcasecmp($this->getTradeType(),'natice')==0 && strcasecmp($this->getTradeType(),'app') == 0) ) {
-                $result -> status = 400;
-                $result -> description = "payType must be native or app";
-                $this->_res = $result;
-                return;
-            }
-        }
-
-        if (CT != "th") {
-            $result->status = 500;
-            $result->description = "Does not support your Area.";
-            $this->_res = $result;
-            return;
-        }
-
         $output = $this->doWallet();
         $result->status = $output['status'];
         $result->description = "";
         //生成二维码
         //app 支付生成schema
         if ($result->status == 201) {
-            if (($output['codeUrl'] != "" || empty($output['codeUrl'])) && $this->tradeType == "NATIVE" ) {
+            if (($output['codeUrl'] != "" || empty($output['codeUrl'])) && strcasecmp($this->getTradeType(),"NATIVE") == 0 ) {
                 # code...
                 $result->qrUrl = $this->erweima($output['codeUrl']);
             }else{
@@ -144,21 +129,7 @@ class WalletService extends CommonService{
     private function erweima($chl,$x ='150',$level='L',$margin='0'){
         return "http://chart.apis.google.com/chart?chs=".$x."x".$x."&cht=qr&chld=".$level."|".$margin."&chl=".urlencode($chl);
     }
-    /**
-     * @return null
-     */
-    public function getProductId()
-    {
-        return $this->productId;
-    }
 
-    /**
-     * @param null $productId
-     */
-    public function setProductId($productId)
-    {
-        $this->productId = $productId;
-    }
 
     /**
      * @return null
@@ -176,21 +147,6 @@ class WalletService extends CommonService{
         $this->price = $price;
     }
 
-    /**
-     * @return null
-     */
-    public function getTransactionId()
-    {
-        return $this->transactionId;
-    }
-
-    /**
-     * @param null $transactionId
-     */
-    public function setTransactionId($transactionId)
-    {
-        $this->transactionId = $transactionId;
-    }
 
     /**
      * @return int

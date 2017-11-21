@@ -32,7 +32,6 @@ class SmsService extends CommonService{
     private $bank = false;//是否是银行定向过来的
     public $_res = [];//处理结果
     protected $map = ['pricelist'=>'price'];
-
     /**
      * 处理逻辑
      * 有ui界面：
@@ -42,50 +41,49 @@ class SmsService extends CommonService{
      *
      */
     public function deal(){
-        if($this->validata() == true){
-            if(is_null($this->getUi())||$this->getUi()!=self::NON_UI_PARAM){
-                if(!$this->isHwChannel()){
-                    //直连，如果session中已经有数据，则使用session中的数据
-                    $hrefSessionName = $this->getTelco()."_".$this->getTransactionId()."_href";
-                    if(Session::getInstance()->has($hrefSessionName)){
-                        $this->_res['href'] = Session::getInstance()->get($hrefSessionName);
+        if(is_null($this->getUi())||$this->getUi()!=self::NON_UI_PARAM){
+            if(!$this->isHwChannel()){
+                //直连，如果session中已经有数据，则使用session中的数据
+                $hrefSessionName = $this->getTelco()."_".$this->getTransactionId()."_href";
+                if(Session::getInstance()->has($hrefSessionName)){
+                    $this->_res['href'] = Session::getInstance()->get($hrefSessionName);
+                }else{
+                    $dConnectRes = $this->dConnect();
+                    if(!empty($dConnectRes['shortCode'])&&!empty($dConnectRes['smsContent'])&&$dConnectRes['status']==201){
+                        $href = "sms:".$dConnectRes['shortCode'].getOs()."body=".$dConnectRes['smsContent'];
+                        $this->_res['href'] = $href;
+                        Session::getInstance()->set($hrefSessionName,$href);
                     }else{
-                        $dConnectRes = $this->dConnect();
-                        if(!empty($dConnectRes['shortCode'])&&!empty($dConnectRes['smsContent'])&&$dConnectRes['status']==201){
-                            $href = "sms:".$dConnectRes['shortCode'].getOs()."body=".$dConnectRes['smsContent'];
-                            $this->_res['href'] = $href;
-                            Session::getInstance()->set($hrefSessionName,$href);
-                        }else{
-                            $this->_res = $dConnectRes;
-                            return;
-                        }
+                        $this->_res = $dConnectRes;
+                        return;
                     }
                 }
-                $this->_res += [
-                    'keyword'=>$this->getKeyword(),
-                    'productId'=>$this->getProductId(),
-                    'transactionId'=>$this->getTransactionId(),
-                    'price'=>$this->getPrice(),
-                    'telcos'=>(new Ini(CFG."/config.common.ini"))->get("telcos")->toArray(),
-                    'telco'=>$this->getTelco(),
-                    'promotionId'=>$this->getPromotionId(),
-                    'propsName'=>$this->getPropsName(),
-                    'ct'=>CT,
-                    'currency'=>(new Ini(CFG."/config.common.ini"))->get("currency"),
-                    'lang'=>(new Ini(CFG."/config.lang.ini"))->toArray(),
-                    'isShowLogo'=>$this->isShowLogo(),
-                    'isHwChannel'=>$this->isHwChannel(),
-                    'bank'=>$this->getBank()
-                ];
+            }
+            $this->_res += [
+                'os'=>getOs(),
+                'keyword'=>$this->getKeyword(),
+                'productId'=>$this->getProductId(),
+                'transactionId'=>$this->getTransactionId(),
+                'price'=>$this->getPrice(),
+                'telcos'=>(new Ini(CFG."/config.common.ini"))->get("telcos")->toArray(),
+                'telco'=>$this->getTelco(),
+                'promotionId'=>$this->getPromotionId(),
+                'propsName'=>$this->getPropsName(),
+                'ct'=>CT,
+                'currency'=>(new Ini(CFG."/config.common.ini"))->get("currency"),
+                'lang'=>(new Ini(CFG."/config.lang.ini"))->toArray(),
+                'isShowLogo'=>$this->isShowLogo(),
+                'isHwChannel'=>$this->isHwChannel(),
+                'bank'=>$this->getBank()
+            ];
+        }else{
+            //无UI
+            if($this->isHwChannel()){
+                //华为通道
+                $this->_res = $this->huawei();
             }else{
-                //无UI
-                if($this->isHwChannel()){
-                    //华为通道
-                    $this->_res = $this->huawei();
-                }else{
-                    //直连
-                    $this->_res = $this->dConnect();
-                }
+                //直连
+                $this->_res = $this->dConnect();
             }
         }
     }
@@ -95,22 +93,19 @@ class SmsService extends CommonService{
      * keyword不为空的时候，cp传的参数就是keyword跟pricelist,keyword=命令字+商品ID+交易号
      * @return bool
      */
-    private function validata(){
+    protected function validata(){
         if(empty($this->getKeyword())){
             if(empty($this->getProductId())){
-                $this->_res = ["status"=>400,"description"=>"productId is require."];
-                return false;
+                throw new \ParamsException("productId is require.",400);
             }
             if(empty($this->getTransactionId())){
-                $this->_res = ["status"=>400,"description"=>"transactionId is require."];
-                return false;
+                throw new \ParamsException("transactionId is require.",400);
             }
         }else{
             //验证命令字
             $cmd = substr($this->getKeyword(), 0,1);
             if(!in_array($cmd,self::SMS_CP_CMD)){
-                $this->_res = ["status"=>400,"description"=>"Invalid command word."];
-                return false;
+                throw new \ParamsException("Invalid command word.",400);
             }
             //keyword验证成功之后直接设置好产品ID跟交易号,并判断是否是银行
             $this->setBank($cmd==6?true:false);
@@ -119,24 +114,20 @@ class SmsService extends CommonService{
         }
         //验证商品价格是否有传递
         if(empty($this->getPrice())){
-            $this->_res = ["status"=>400,"description"=>"price is require."];
-            return false;
+            throw new \ParamsException("price is require.",400);
         }
         //依赖ui项
         if($this->getUi() == self::NON_UI_PARAM&&!is_null($this->getUi())){
             if(empty($this->getTelco())){
-                $this->_res = ["status"=>400,"description"=>"telco is require."];
-                return false;
+                throw new \ParamsException("telco is require.",400);
             }
             if($this->isHwChannel()&&empty($this->getMsisdn())){
-                $this->_res = ["status"=>400,"description"=>"invalid msisdn."];
-                return false;
+                throw new \ParamsException("invalid msisdn.",400);
             }
         }
         //运营商
         if(!in_array($this->getTelco(),(new Ini(CFG."/config.common.ini"))->get("telcos")->toArray())&&!empty($this->getTelco())){
-            $this->_res = ["status"=>400,"description"=>"invalid telco."];
-            return false;
+            throw new \ParamsException("invalid telco.",400);
         }
         return true;
     }
@@ -259,12 +250,17 @@ class SmsService extends CommonService{
                 return '98888';
             }
         }
+        if(CT == 'test'){
+            return $dm->get($this->getPrice());
+        }
     }
     /**
      * 直连短代下单
      */
     private function doSmsCreateOrder($smsContent,$shortCode){
-        $closeProductIdForTrue	= (new Ini(CFG."/config.sc.ini"))->get("true")->closeproductId;
+        if(CT == 'th'){
+            $closeProductIdForTrue	= (new Ini(CFG."/config.sc.ini"))->get("true")->get("closeproductId")->toArray();
+        }
         $lang = new Ini(CFG."/config.lang.ini");
         $host = Registry::get("config")->country->host[CT];
         $beforeHash = "productId=".$this->getProductId()
@@ -273,7 +269,7 @@ class SmsService extends CommonService{
             ."&shortcode=".$shortCode
             ."&smsMsg=".$smsContent;
         $key = \ProductInfoModel::find($this->productId)->producter->md5Suf;
-        if($this->getTelco() == 'true' && in_array($this->productId,$closeProductIdForTrue)){
+        if(CT=='th'&&$this->getTelco() == 'true' && in_array($this->productId,$closeProductIdForTrue)){
             return ['status'=>700,'description'=>str_replace("{}", $this->telco, $lang[700])];
         }
         if (empty($shortCode)) {
@@ -321,17 +317,42 @@ class SmsService extends CommonService{
         if(CT == 'th'){
             return "";
         }
+        if(CT == 'test'){
+            return $this->getPrice()."_";
+        }
         $keywords = new Ini(CFG."/config.sc.ini");
         if(CT == 'in'){
             $getIsCpPayVat = \ProductInfoModel::join("indonesia_price_cp","product_info.producer_id","=","indonesia_price_cp.producer_id")
-                ->where("product_info.product_id",$this->productId)
-                ->where("indonesia_price_cp.real_telco",$this->telco)
+                ->where("product_info.product_id",$this->getProductId())
+                ->where("indonesia_price_cp.real_telco",$this->getTelco())
                 ->get(["product_info.producer_id"]);
             if($getIsCpPayVat){
-                return $keywords[$this->getTelco()."_1"][$this->price];
+                return $keywords[$this->getTelco()."_1"][$this->getPrice()];
             }
         }
-        return  $keywords[$this->getTelco()][$this->price];
+        return  $keywords[$this->getTelco()][$this->getPrice()];
+    }
+
+    /**
+     * 华为通道生成短信内容
+     * @return array
+     */
+    public function genSmsConten(){
+        $hrefSessionName = $this->getTransactionId()."_href";
+        if(\Yaf\Session::getInstance()->has($hrefSessionName)){
+            $res = ['status'=>605,'description'=>(new Ini(CFG."/config.lang.ini"))->get("605")];
+        }else{
+            $res = $this->huawei();
+            if($res['status'] == 201&&!empty($res['shortCode'])&&!empty($res['smsContent'])){
+                $href = "sms:".$res['shortCode'].getOs()."body=".$res['smsContent'];
+                $res['href'] = $href;
+                \Yaf\Session::getInstance()->set($hrefSessionName,$href);
+            }elseif($res['status'] == 201&&empty($res['shortCode'])&&empty($res['smsContent'])){
+                //验证码
+                $res['href'] = '';
+            }
+        }
+        return $res;
     }
     /**
      * 获取下单短信内容，keyword是CP传过来的，keyword第一位：2为短代
@@ -437,21 +458,6 @@ class SmsService extends CommonService{
         $this->ui = $ui;
     }
 
-    /**
-     * @return null
-     */
-    public function getProductId()
-    {
-        return $this->productId;
-    }
-
-    /**
-     * @param null $productId
-     */
-    public function setProductId($productId)
-    {
-        $this->productId = $productId;
-    }
 
     /**
      * @return string
@@ -486,22 +492,6 @@ class SmsService extends CommonService{
     public function setPrice($price)
     {
         $this->price = $price;
-    }
-
-    /**
-     * @return null
-     */
-    public function getTransactionId()
-    {
-        return $this->transactionId;
-    }
-
-    /**
-     * @param null $transactionId
-     */
-    public function setTransactionId($transactionId)
-    {
-        $this->transactionId = $transactionId;
     }
 
     /**

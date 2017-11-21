@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>BluePay</title>
+    {% block stylesheet %}
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/bank/test/style.css">
+    {% endblock %}
+</head>
+<body>
+
+<div id="_logo">
+    <div class="container">
+        {% if prePage is not empty %}
+            <div style="color:#48A7FF;height: 20px;width: 150px;position: absolute;z-index: 2;top: 15px;">
+                <a href="{{ prePage }}"><img src="/img/Back.png" style="padding:0px 10px;margin:0px;width: 39px;height: 24px;float: left;"><!--pilih tarif yang lain--></a>
+            </div>
+        {% endif %}
+        <div class="col-md-12">
+            <img src="/img/bluePay_logo.png" class="center-block img-responsive">
+        </div>
+    </div>
+</div>
+<div class="bank-order-info">
+    <div class="order-info">
+        <div class="item">
+            <div class="label-text">Transaction Id</div>
+            <div class="value-text">{{ transactionId }}</div>
+        </div>
+        <hr class="divider-line"/>
+        <div class="item">
+            <div class="label-text">Price</div>
+            <div class="value-text">
+                {% if(country=='vn') %}
+                    {{ price|number_format~"VND" }}
+                {% else %}
+                    {{ "Rp."~price|number_format }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="bank-info">
+        <h4 style="margin-left:20px;margin-top:20px;">Bank Card NO.</h4>
+        <div class="input-lg myclass"><input type="text" id="input_cardNo" class="form-control" style="width:98%;margin:0 auto;" placeholder="Please input the test Bank Card NO."></div>
+        <div class="btn-confirm">
+            <button type="submit" class="btn btn-block btn-lg btn-info " id="btn_confirm" onclick="doAction(this)">Submit</button>
+        </div>
+    </div>
+</div>
+{% include 'footer.twig' %}
+{% block component  %}
+    {% include 'alert.twig' %}
+    {% include 'loading.twig' %}
+{% endblock %}
+{% block javascript %}
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script>
+        function doAction(obj){
+            var productId  = {{ productId }};
+            var cardNo = $("#input_cardNo").val();
+            if (cardNo=="") {
+                displayInfo("Please input cardNo.");
+                return;
+            }
+            var url = "productId=" + {{ productId }}
+                    + "&orderId="  + '{{ orderId }}'
+                    + "&cardNo="  + cardNo
+                    + "&price=" + {{ price }}
+                    + "&country=" + '{{ country }}'
+                    + "&transactionId=" + {{ transactionId }};
+            showLoading();
+            $.ajax({
+                type: "GET",
+                url: "/c=bank&a=submit?"+url,
+                dataType: "json",
+                success: function(data){
+                    hideLoading();
+                    if (data.status == "200" ) {
+                        displayInfo("Pay success");
+                    }else{
+                        displayInfo("Pay failed（"+data.description+"）");
+                    }
+                },
+                error:function(){
+                    hideLoading();
+                    displayInfo('Request timeout, Please check your network.',false);
+                }
+            });
+            return true;
+        }
+    </script>
+{% endblock %}
+</body>
+</html>

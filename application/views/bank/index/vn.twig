@@ -1,0 +1,131 @@
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <meta HTTP-EQUIV="expires" CONTENT="0">
+    <title>BluePay</title>
+    {% block stylesheet %}
+        <link  href={{ '/css/bootstrap.min.css' }} rel="stylesheet">
+        <link  href={{ '/css/bank/vn/style.css' }} rel="stylesheet">
+        <link href={{ '/css/common.css' }} rel="stylesheet" />
+    {% endblock %}
+</head>
+<body>
+<!-- Fixed navbar -->
+<header id="myHeader" style="display:none">
+    <button class="icon-backright" onclick="window.history.back();"></button>
+    <button class="g-refresh" onclick="location.reload();"></button>
+</header>
+<section>
+    <div class="container">
+        <div class="wap">
+            <div class="row log" >
+                <div class="jumbotron" id="botron">
+                    <img src="/img/bank/vn/bluePay_logo.png" />
+                </div>
+            </div>
+
+            <div class="row info">
+                <div class="jumbotron">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="badge">{{ transactionId }}</span>
+                            Transaction code
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge">{{ price|number_format }} đ</span>
+                            Transaction value
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge">BMVN</span>
+                            merchant
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row title">
+                <div class="panel-body">
+                    <p>PAYMENT METHODS</p>
+                </div>
+            </div>
+            <div class="row bank">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#onlineBanking" aria-expanded="true" aria-controls="onlineBanking">
+                            <img src="/img/bank/vn/bank1.png" alt="Online Banking" class="icon-img pull-left">
+                            <h4 class="panel-title">Online Banking</h4>
+                            <div class="clearfix"></div>
+                        </a>
+                    </div>
+                    <div id="onlineBanking" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                        <div class="panel-body">
+                            <div class="box-nganhang" id="list-bank">
+                                {% for k,v in banks %}
+                                    <div class="row bankbox" style="display: {% if k>2 %}none{% endif %}">
+                                        {% set i=1 %}
+                                        {% for bankName,encrypt in v %}
+                                            {% set i=i+1 %}
+                                            {% if k==2 and i==4 %}
+                                                <div class="col-xs-4  col-md-4" id="more-bank">
+                                                    <button  type="submit" class="thumbnail">
+                                                        <img src="/img/bank/vn/other-bank.png" alt="other-bank"   data-holder-rendered="true">
+                                                    </button>
+                                                </div>
+                                                <div class="col-xs-4  col-md-4 hiddenbank" style="display: none;">
+                                                    <form method="POST" class="form-inline" >
+                                                        <!--提交数据-->
+                                                        {{ input_str|raw }}
+                                                        <input type="hidden" name="bank_id" value="{{ encrypt }}">
+                                                        <input type="hidden" name="transactionId" value="{{ transactionId }}">
+                                                        <input type="hidden" name="price" value="{{ price }}">
+                                                        <input type="hidden" name="promotionId" value="{{ promotionId }}">
+                                                        <input type="hidden" name="propsName" value="{{ propsName }}">
+                                                        <button   type="submit"  class="thumbnail">
+                                                            <img  src="/img/bank/vn/{{ bankName }}.png" alt="{{ bankName }}"   data-holder-rendered="true">
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            {% else %}
+                                                <div class="col-xs-4  col-md-4">
+                                                    <form method="POST" action="/c=bank&a=submit"class="form-inline" >
+                                                        <!--提交数据-->
+                                                        {{ input_str|raw }}
+                                                        <input type="hidden" name="bank_id" value="{{ encrypt }}">
+                                                        <input type="hidden" name="transactionId" value="{{ transactionId }}">
+                                                        <input type="hidden" name="price" value="{{ price }}">
+                                                        <input type="hidden" name="promotionId" value="{{ promotionId }}">
+                                                        <input type="hidden" name="propsName" value="{{ propsName }}">
+                                                        <button   type="submit"  class="thumbnail">
+                                                            <img  src="/img/bank/vn/{{ bankName }}.png" alt="{{ bankName }}"   data-holder-rendered="true">
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.container -->
+</section>
+{% block component  %}
+    {% include 'alert.twig' %}
+    {% include 'loading.twig' %}
+{% endblock %}
+{% block javascript %}
+    <script src={{ '/js/jquery.min.js' }}></script>
+    <script src={{ '/js/bootstrap.min.js' }}></script>
+    <script src={{ '/js/common.js' }}></script>
+    <script src={{ '/js/bank/vn/main.js' }}></script>
+    <script src={{ '/js/bank/vn/phone.js' }}></script>
+{% endblock %}
+</body>
+</html>

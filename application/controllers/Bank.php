@@ -16,10 +16,13 @@ class BankController extends CommonController{
     public function indexAction(){
         $bankService = new \service\BankService($this->getRequest());
         $result = $bankService->index();
-        if($result['location']){
+        if(!empty($result['location'])){
             //越南银行使用vtc渠道会跳转到charge的url
             Dispatcher::getInstance()->disableView();
             $this->redirect($result['location']);
+        }elseif($result['status'] == 400){
+            $this->getResponse()->setBody(juu($result));
+            Dispatcher::getInstance()->disableView();
         }else{
             $this->display("index_".CT,$result);
             Dispatcher::getInstance()->disableView();

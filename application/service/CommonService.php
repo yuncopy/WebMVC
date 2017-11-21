@@ -14,6 +14,7 @@ use Yaf\Request_Abstract;
 class CommonService {
     protected $productId = null;//商品ID
     protected $transactionId = null;//交易号
+    protected $encrypt = null;
 
     const NON_UI_PARAM = 'none';//无UI的控制参数
     /**
@@ -22,6 +23,7 @@ class CommonService {
      */
     public function __construct($data)
     {
+        //echo \Encypt::encrypt("productId=1&transactionId=231412345&price=5000&ui=none",1);die;
         if($data instanceof Request_Abstract ){
             $requestData = $data->getQuery();
         }else{
@@ -41,6 +43,35 @@ class CommonService {
                 $this->$act(empty($item)?null:$item);
             }
         },$map);
+        try{
+            if(method_exists($this,"validata")){
+                $this->validata();
+            }
+            if(!empty($this->getEncrypt())){
+                $org = \Encypt::decrypt($this->getEncrypt(),$this->getProductId());
+                if(empty($org)){
+                    throw new \ParamsException("encrypt error.",400);
+                }
+                $orgArr = [];
+                foreach(explode("&",$org) as $k => $v){
+                    $pos = strpos($v,"=");
+                    $key = substr($v,0,$pos);
+                    $value = substr($v,$pos+1);
+                    $orgArr[$key] = $value;
+                }
+                foreach($orgArr as $k => $v){
+                    $name = "get".ucfirst($k);
+                    if($v!=$this->$name()){
+                        throw new \ParamsException("encrypt error.",400);
+                    }
+                }
+            }
+        }catch (\ParamsException $e){
+            $log = ['status'=>$e->getCode(),'description'=>$e->getMessage()];
+            $log['request'] = $requestData;
+            \Logs::debug("params_error.".date('Ymd'))->addError(get_called_class()."请求参数错误",$log);
+            exit(juu(['status'=>$e->getCode(),'description'=>$e->getMessage()]));
+        }
     }
     /**
      * http客户端
@@ -76,5 +107,53 @@ class CommonService {
         }
         Registry::set($name,new \ReflectionClass($class));
         return Registry::get($name);
+    }
+
+    /**
+     * @return null
+     */
+    public function getProductId()
+    {
+        return $this->productId;
+    }
+
+    /**
+     * @param null $productId
+     */
+    public function setProductId($productId)
+    {
+        $this->productId = $productId;
+    }
+
+    /**
+     * @return null
+     */
+    public function getTransactionId()
+    {
+        return $this->transactionId;
+    }
+
+    /**
+     * @param null $transactionId
+     */
+    public function setTransactionId($transactionId)
+    {
+        $this->transactionId = $transactionId;
+    }
+
+    /**
+     * @return null
+     */
+    public function getEncrypt()
+    {
+        return $this->encrypt;
+    }
+
+    /**
+     * @param null $encrypt
+     */
+    public function setEncrypt($encrypt)
+    {
+        $this->encrypt = $encrypt;
     }
 }

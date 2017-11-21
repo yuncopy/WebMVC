@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>BluePay</title>
+    {% block stylesheet %}
+        <link rel="stylesheet" type="text/css" href={{ "/css/style.css" }}>
+        <link rel="stylesheet" href={{ "/css/cashcard/style.css" }}>
+    {% endblock %}
+</head>
+<body sroll="no">
+
+<div id="wrap">
+    <div id="main-content">
+        <div id="_logo">
+            <div class="container">
+                <div class="col-md-12">
+                    <img src="/img/bluePay_logo.png" class="center-block img-responsive">
+                </div>
+            </div>
+        </div>
+        <div id="_sub-content">
+            <div class="container">
+                <div class="contentTopthb">
+                    <span class="topclass">
+                        <ul>
+                            {% if(ct=='test') %}
+                                {% for k,v in op %}
+                                    <span id="topSpanID">
+                                        {% for value in v %}
+                                            <li style="width: {{ 0.9/(v|length)*100 }}%"><a href="javascript:void(0);" id="{{ value|lower }}" onclick="selectTelco('{{ value|lower }}')">{{ value }}</a></li>
+                                        {% endfor %}
+                                    </span>
+                                    <ol class="liimagthb" id="morethbID"><img style="margin-left:10px;" src="/img/{{ k }}.png" alt="" width="20px" ></ol>
+                                {% endfor %}
+                            {% else %}
+                                <span id="topSpanID">
+                                {% for v in op %}
+                                    <li style="width: {{ 1/(op|length)*100 }}%"><a href="javascript:void(0);" id="{{ v|lower }}" onclick="selectTelco('{{ v|lower }}')">{{ v }}</a></li>
+                                {% endfor %}
+                                </span>
+                            {% endif %}
+                        </ul>
+                    </span>
+                </div>
+                <div class="contentpicthb">
+                    <img id="ic_telco" width="70%" style="padding-top: 2px;">
+                </div>
+                <div class="col-md-12 contentbottomthb">
+                        <span id="inptTextId">
+                            {{ input|raw }}
+                        </span>
+                    {{ thGuideBlueCoins|raw }}
+                    <button type="button" id="buttonTestID" class="btn btn-block btn-lg btn-info" onclick="submit()">{{ lang.confirm }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'footer.twig' %}
+{% block component  %}
+    {% include 'alert.twig' %}
+    {% include 'loading.twig' %}
+{% endblock %}
+{% block javascript %}
+    <script src={{ "/js/jquery.min.js" }}></script>
+    <script src={{ "/js/bootstrap.min.js" }}></script>
+    <script src={{ "/js/bluepay.js" }}></script>
+    <script src={{ "/js/cashcard/main.js" }}></script>
+    <script>
+        init({
+            ct:'{{ ct }}',
+            lang:'{{ lang|json_encode|raw }}',
+            redirectUrl:'{{ redirectUrl }}',
+            cardNo:'{{ cardNo }}',
+            serialNo:'{{ serialNo }}',
+            productId:'{{ productId }}',
+            promotionId:'{{ promotionId }}',
+            provider:'{{ provider }}',
+            propsName:'{{ propsName }}',
+            customerId:'{{ customerId }}',
+            transactionId:'{{ transactionId }}',
+            status:'{{ status }}',
+            description:'{{ description }}',
+            isShowLogo:'{{ isShowLogo }}'
+        });
+    </script>
+{% endblock %}
+</body>
+</html>
